@@ -5,5 +5,5 @@
 ## start the app
 
 ```
-npm run def
+npm run dev
 ```
