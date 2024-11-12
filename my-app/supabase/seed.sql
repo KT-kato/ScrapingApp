@@ -1,0 +1,1 @@
+INSERT INTO "public"."countries" ("name") VALUES ('Canada'), ('United States'), ('Mexico');
