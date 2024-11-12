@@ -7,8 +7,8 @@ export type Country = {
 
 export const getCountries = async (): Promise<Country[] | undefined> => {
   const supabase = createClient(
-    import.meta.env.VITE_PROJECT_URL || "",
-    import.meta.env.VITE_ANON_KEY || ""
+    import.meta.env.VITE_LOCAL_PROJECT_URL || "",
+    import.meta.env.VITE_LOCAL_ANON_KEY || ""
   );
 
   const { data: countries, error } = await supabase
