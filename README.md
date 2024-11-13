@@ -37,6 +37,18 @@ supabse db reset
 supabase db pull
 ```
 
+## crate supabase function
+
+```
+supabase functions new your-functions
+```
+
+## running supabase function
+
+```
+supabase function serve
+```
+
 ### 参考
 
 [supabase のローカル環境を整える](https://qiita.com/eno49conan/items/4596c1983ee5e3f9e324)
