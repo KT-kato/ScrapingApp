@@ -1,26 +1,11 @@
-import { useEffect, useState } from "react";
-import { Country, getCountries } from "./database/countries/getCountries";
+import { List } from "./components/List";
+import "./App.css";
 
 function App() {
-  const [countries, setCountries] = useState<Country[]>([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const res = await getCountries();
-      if (res) {
-        setCountries(res);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <ul>
-      {countries.map((country) => (
-        <li key={country.name}>{country.name}</li>
-      ))}
-    </ul>
+    <div className="app">
+      <List />
+    </div>
   );
 }
 
