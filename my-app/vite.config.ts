@@ -6,6 +6,13 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
 
   return {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern-compiler",
+        },
+      },
+    },
     plugins: [react()],
     define: {
       PROJECT_URL: JSON.stringify(env.PROJECT_URL),
