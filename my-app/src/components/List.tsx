@@ -1,11 +1,19 @@
 import {
+  Button,
   Card,
   CardBody,
   CardTitle,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
 import styles from "./List.module.scss";
+import Highcharts, { Axis } from "highcharts";
+import HighchartsReact from "highcharts-react-official";
+import { useEffect, useMemo, useState } from "react";
 
 const listSapmle = [
   {
@@ -149,7 +157,127 @@ const detailSample = {
   ],
 };
 
+const TABLE_HEADER = [
+  "Model",
+  "Sold Count",
+  "Active Count",
+  "Sold Min Price",
+  "Sold Max Price",
+  "Sold Avg Price",
+  "Active Min Price",
+  "Active Max Price",
+  "Active Avg Price",
+];
+
 export const List = () => {
+  const [isOpenChartSelector, setIsOpenChartSelector] = useState(false);
+  const [selectedItem, setSelectedItem] = useState("");
+
+  useEffect(() => {
+    setSelectedItem(TABLE_HEADER[1]);
+  }, []);
+
+  const soldCountData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.soldCount,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const activeCountData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.activeCount,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const soldMinPriceData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.soldMinPrice,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const soldMaxPriceData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.soldMaxPrice,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const soldAvgPriceData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.soldAvgPrice,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const activeMinPriceData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.activeMinPrice,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const activeMaxPriceData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.activeMaxPrice,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const activeAvgPriceData = useMemo(() => {
+    return detailSample.modelSalsePerformances.map((item) => ({
+      key: item.model,
+      value: item.activeAvgPrice,
+    }));
+  }, [detailSample.modelSalsePerformances]);
+
+  const chartItems = useMemo(() => {
+    return [
+      { label: "Sold Count", data: soldCountData },
+      { label: "Active Count", data: activeCountData },
+      { label: "Sold Min Price", data: soldMinPriceData },
+      { label: "Sold Max Price", data: soldMaxPriceData },
+      { label: "Sold Avg Price", data: soldAvgPriceData },
+      { label: "Active Min Price", data: activeMinPriceData },
+      { label: "Active Max Price", data: activeMaxPriceData },
+      { label: "Active Avg Price", data: activeAvgPriceData },
+    ];
+  }, [
+    soldCountData,
+    activeCountData,
+    soldMinPriceData,
+    soldMaxPriceData,
+    soldAvgPriceData,
+    activeMinPriceData,
+    activeMaxPriceData,
+    activeAvgPriceData,
+  ]);
+
+  const chartOptions: Highcharts.Options = useMemo(
+    () => ({
+      title: {
+        text: "",
+      },
+      xAxis: {
+        categories: detailSample.modelSalsePerformances.map(
+          (item) => item.model
+        ),
+      },
+      series: [
+        {
+          data: chartItems
+            .find((item) => item.label === selectedItem)
+            ?.data.map((item) => [item.value]),
+          type: "column",
+          name: "Sold Count",
+        },
+      ],
+    }),
+    [chartItems, selectedItem]
+  );
+
   return (
     <div className={styles.cardContainer}>
       <Card className={styles.listCardBody}>
@@ -176,15 +304,9 @@ export const List = () => {
             <table className={styles.salesPerformanceTable}>
               <thead>
                 <tr>
-                  <th>Model</th>
-                  <th>Sold Count</th>
-                  <th>Active Count</th>
-                  <th>Sold Min Price</th>
-                  <th>Sold Max Price</th>
-                  <th>Sold Avg Price</th>
-                  <th>Active Min Price</th>
-                  <th>Active Max Price</th>
-                  <th>Active Avg Price</th>
+                  {TABLE_HEADER.map((item) => (
+                    <th key={item}>{item}</th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
@@ -203,6 +325,32 @@ export const List = () => {
                 ))}
               </tbody>
             </table>
+          </div>
+          <div className={styles.chartItemSelector}>
+            <Dropdown
+              isOpen={isOpenChartSelector}
+              onClick={() => setIsOpenChartSelector(!isOpenChartSelector)}
+              className="me-2"
+            >
+              <DropdownToggle caret>Select Performance Item</DropdownToggle>
+              <DropdownMenu container="body">
+                {chartItems.map((item) => (
+                  <DropdownItem
+                    key={item.label}
+                    onClick={() => setSelectedItem(item.label)}
+                  >
+                    {item.label}
+                  </DropdownItem>
+                ))}
+              </DropdownMenu>
+            </Dropdown>
+          </div>
+          <div className={styles.chartContainer}>
+            <HighchartsReact
+              highcharts={Highcharts}
+              class={styles.chart}
+              options={chartOptions}
+            />
           </div>
         </CardBody>
       </Card>
