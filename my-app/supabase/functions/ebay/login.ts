@@ -1,6 +1,7 @@
 import { Buffer } from "node:buffer";
 import https from "node:https";
 import queryString from "node:querystring";
+import { corsHeaders } from "../common/utils.ts";
 
 type BodyType = {
   cliendId: string;
@@ -49,7 +50,6 @@ const getResponseToken = (body: BodyType): Promise<string> => {
           console.log("Error in response: ", responseData);
         } else {
           resolve(responseData);
-          console.log("Response: ", responseData);
         }
       });
     });
@@ -67,17 +67,15 @@ export const getEbayAuthToken = async () => {
     clientSecret: Deno.env.get("EBAY_CLIENT_SECRET") as string,
     redirectUri: Deno.env.get("EBAY_REDIRECT_URI") as string,
   };
-  console.log("Request: ", ebayTokenRequestBody);
-
   try {
     const response = await getResponseToken(ebayTokenRequestBody);
     return new Response(response, {
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error) {
     return new Response(error as string, {
       status: 400,
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   }
 };
