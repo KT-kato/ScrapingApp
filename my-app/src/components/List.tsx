@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardBody,
   CardTitle,
@@ -11,9 +10,11 @@ import {
   ListGroupItem,
 } from "reactstrap";
 import styles from "./List.module.scss";
-import Highcharts, { Axis } from "highcharts";
+import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useEffect, useMemo, useState } from "react";
+import { getEbayToken } from "../slices/ebaySlices";
+import { useDispatch, useSelector } from "../slices/store";
 
 const listSapmle = [
   {
@@ -172,6 +173,13 @@ const TABLE_HEADER = [
 export const List = () => {
   const [isOpenChartSelector, setIsOpenChartSelector] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
+
+  const dispatch = useDispatch();
+  const { ebayToken } = useSelector((state) => state.ebay);
+
+  useEffect(() => {
+    dispatch(getEbayToken());
+  }, [dispatch]);
 
   useEffect(() => {
     setSelectedItem(TABLE_HEADER[1]);
