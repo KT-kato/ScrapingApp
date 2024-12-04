@@ -17,6 +17,7 @@ $cardPadding: 2.5rem;
   margin-top: $containerMarginY;
   margin-bottom: $containerMarginY;
   position: relative;
+  overflow-y: auto;
 }
 
 .listCardBody {
@@ -31,7 +32,6 @@ $cardPadding: 2.5rem;
 .cardContainer {
   display: flex;
   height: 100%;
-  width: 100vw;
   margin-right: $containerMarginX;
   margin-left: $containerMarginX;
 }
