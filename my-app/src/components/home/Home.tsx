@@ -9,12 +9,13 @@ import {
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
-import styles from "./List.module.scss";
+import styles from "./Home.module.scss";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useEffect, useMemo, useState } from "react";
-import { getEbayToken } from "../slices/ebaySlices";
-import { useDispatch } from "../slices/store";
+import { getEbayToken } from "../../slices/ebaySlices";
+import { useDispatch } from "../../slices/store";
+import { Page } from "../page/Page";
 
 const listSapmle = [
   {
@@ -170,7 +171,7 @@ const TABLE_HEADER = [
   "Active Avg Price",
 ];
 
-export const List = () => {
+export const Home = () => {
   const [isOpenChartSelector, setIsOpenChartSelector] = useState(false);
   const [selectedItem, setSelectedItem] = useState("");
 
@@ -286,81 +287,83 @@ export const List = () => {
   );
 
   return (
-    <div className={styles.cardContainer}>
-      <Card className={styles.listCardBody}>
-        <CardBody>
-          <CardTitle tag="h5">Bland List</CardTitle>
-          <ListGroup className="my-5">
-            {listSapmle.map((item) => (
-              <ListGroupItem
-                key={item.id}
-                className={`list-group-item-action action ${styles.listGroupItem}`}
-                href="#pablo"
-                tag={"a"}
-              >
-                {item.name}
-              </ListGroupItem>
-            ))}
-          </ListGroup>
-        </CardBody>
-      </Card>
-      <Card className={styles.detailCard}>
-        <CardBody className={styles.detailCardBody}>
-          <CardTitle tag="h5">Salse Performance</CardTitle>
-          <div className={styles.tableWrapper}>
-            <table className={styles.salesPerformanceTable}>
-              <thead>
-                <tr>
-                  {TABLE_HEADER.map((item) => (
-                    <th key={item}>{item}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {detailSample.modelSalsePerformances.map((item) => (
-                  <tr key={item.id}>
-                    <td>{item.model}</td>
-                    <td>{item.soldCount}</td>
-                    <td>{item.activeCount}</td>
-                    <td>{item.soldMinPrice}</td>
-                    <td>{item.soldMaxPrice}</td>
-                    <td>{item.soldAvgPrice}</td>
-                    <td>{item.activeMinPrice}</td>
-                    <td>{item.activeMaxPrice}</td>
-                    <td>{item.activeAvgPrice}</td>
+    <Page>
+      <div className={styles.homeContainer}>
+        <Card className={styles.listCard}>
+          <CardBody>
+            <CardTitle tag="h5">Bland List</CardTitle>
+            <ListGroup className="my-5">
+              {listSapmle.map((item) => (
+                <ListGroupItem
+                  key={item.id}
+                  className={`list-group-item-action action ${styles.listGroupItem}`}
+                  href="#pablo"
+                  tag={"a"}
+                >
+                  {item.name}
+                </ListGroupItem>
+              ))}
+            </ListGroup>
+          </CardBody>
+        </Card>
+        <Card className={styles.detailCard}>
+          <CardBody className={styles.detailCardBody}>
+            <CardTitle tag="h5">Salse Performance</CardTitle>
+            <div className={styles.tableWrapper}>
+              <table className={styles.salesPerformanceTable}>
+                <thead>
+                  <tr>
+                    {TABLE_HEADER.map((item) => (
+                      <th key={item}>{item}</th>
+                    ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.chartItemSelector}>
-            <Dropdown
-              isOpen={isOpenChartSelector}
-              onClick={() => setIsOpenChartSelector(!isOpenChartSelector)}
-              className="me-2"
-            >
-              <DropdownToggle caret>Select Performance Item</DropdownToggle>
-              <DropdownMenu container="body">
-                {chartItems.map((item) => (
-                  <DropdownItem
-                    key={item.label}
-                    onClick={() => setSelectedItem(item.label)}
-                  >
-                    {item.label}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-          <div className={styles.chartContainer}>
-            <HighchartsReact
-              highcharts={Highcharts}
-              class={styles.chart}
-              options={chartOptions}
-            />
-          </div>
-        </CardBody>
-      </Card>
-    </div>
+                </thead>
+                <tbody>
+                  {detailSample.modelSalsePerformances.map((item) => (
+                    <tr key={item.id}>
+                      <td>{item.model}</td>
+                      <td>{item.soldCount}</td>
+                      <td>{item.activeCount}</td>
+                      <td>{item.soldMinPrice}</td>
+                      <td>{item.soldMaxPrice}</td>
+                      <td>{item.soldAvgPrice}</td>
+                      <td>{item.activeMinPrice}</td>
+                      <td>{item.activeMaxPrice}</td>
+                      <td>{item.activeAvgPrice}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className={styles.chartItemSelector}>
+              <Dropdown
+                isOpen={isOpenChartSelector}
+                onClick={() => setIsOpenChartSelector(!isOpenChartSelector)}
+                className="me-2"
+              >
+                <DropdownToggle caret>Select Performance Item</DropdownToggle>
+                <DropdownMenu container="body">
+                  {chartItems.map((item) => (
+                    <DropdownItem
+                      key={item.label}
+                      onClick={() => setSelectedItem(item.label)}
+                    >
+                      {item.label}
+                    </DropdownItem>
+                  ))}
+                </DropdownMenu>
+              </Dropdown>
+            </div>
+            <div className={styles.chartContainer}>
+              <HighchartsReact
+                highcharts={Highcharts}
+                class={styles.chart}
+                options={chartOptions}
+              />
+            </div>
+          </CardBody>
+        </Card>
+      </div>
+    </Page>
   );
 };
