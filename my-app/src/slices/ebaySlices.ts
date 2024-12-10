@@ -1,11 +1,11 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { getEbayAccessToken } from "../api/ebay";
 import { AppThunk } from "./store";
 import { AxiosError } from "axios";
-import { ebayTokenProps } from "../api/ebay/type";
+import { ebayTokenResponseType } from "../api/ebay/type";
 
 export type ebayState = {
-  ebayToken?: ebayTokenProps;
+  ebayToken?: ebayTokenResponseType;
 };
 
 const initialState: ebayState = {
@@ -16,7 +16,7 @@ export const ebaySlice = createSlice({
   name: "ebay",
   initialState,
   reducers: {
-    setEbayToken: (state, action) => {
+    setEbayToken: (state, action: PayloadAction<ebayTokenResponseType>) => {
       state.ebayToken = action.payload;
     },
   },
