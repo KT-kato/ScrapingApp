@@ -1,0 +1,16 @@
+$containerHeight: 100vh;
+$containerWidth: 100vw;
+$containerMarginX: 5rem;
+$containerMarginY: 5rem;
+
+.pageContainer {
+  width: calc($containerWidth - $containerMarginX * 2);
+  height: calc($containerHeight - $containerMarginY * 2);
+  margin-left: $containerMarginX;
+  margin-right: $containerMarginX;
+  margin-top: $containerMarginY;
+  margin-bottom: $containerMarginY;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

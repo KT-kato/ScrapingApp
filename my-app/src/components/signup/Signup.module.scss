@@ -1,0 +1,41 @@
+$detailCardWidth: 70vw;
+$loginCardWidth: 30vw;
+
+.loginContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .loginTitle {
+    font-size: 2rem;
+    margin: 2rem;
+  }
+
+  .loginFormContainer {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+
+    .label {
+      width: 150px;
+      margin: 0 0 0 0;
+    }
+
+    .inputContainer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-direction: row;
+      column-gap: 2rem;
+      height: 100%;
+    }
+  }
+
+  .signupFormContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 0.5rem;
+    row-gap: 2rem;
+  }
+}

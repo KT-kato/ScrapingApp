@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ebayReducer from "./ebaySlices";
+import sessionReducer from "./sessionSlices";
 
 import type { ThunkAction, Action } from "@reduxjs/toolkit";
 import {
@@ -11,6 +12,7 @@ import {
 export const store = configureStore({
   reducer: {
     ebay: ebayReducer,
+    session: sessionReducer,
   },
 });
 
