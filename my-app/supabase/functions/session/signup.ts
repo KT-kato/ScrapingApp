@@ -1,6 +1,7 @@
 import { AuthResponse, createClient } from "npm:@supabase/supabase-js";
 import { SignUpRequestBody } from "./types.ts";
 import { corsHeaders } from "../common/utils.ts";
+import { getEbayApplicationAccessToken } from "../ebay/utils/utils.ts";
 
 export const signUpNewUser = async (_req: Request) => {
   const body: SignUpRequestBody = await _req.json();
@@ -14,6 +15,12 @@ export const signUpNewUser = async (_req: Request) => {
       emailRedirectTo: "http://localhost:5173",
     },
   });
+  if (!data) {
+    return new Response("Invalid Supabase credentials", {
+      status: 400,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+  }
   if (error) {
     console.log(error);
     return new Response(JSON.stringify(error), {
@@ -22,8 +29,22 @@ export const signUpNewUser = async (_req: Request) => {
       statusText: error.message,
     });
   }
-  return new Response(JSON.stringify(data), {
-    status: 200,
-    headers: { "Content-Type": "application/json", ...corsHeaders },
-  });
+
+  try {
+    const ebayToken = await getEbayApplicationAccessToken();
+    const responseData = {
+      user: data.user,
+      session: data.session,
+      ebayToken: ebayToken,
+    };
+    return new Response(JSON.stringify(responseData), {
+      status: 200,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+  } catch (_error) {
+    return new Response("invalid Ebay credentials", {
+      status: 400,
+      headers: { "Content-Type": "application/json", ...corsHeaders },
+    });
+  }
 };

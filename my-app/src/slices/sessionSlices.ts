@@ -3,16 +3,20 @@ import { getSessionToken, signUpNewUser } from "../api/session";
 import { AppThunk } from "./store";
 import { AxiosError } from "axios";
 import {
+  EbayTokenType,
   LoginRequestBody,
   LoginResponseType,
   SignUpRequestBody,
   SignUpResponseType,
 } from "../api/session/types";
-import { Session } from "@supabase/supabase-js";
+import { Session, User } from "@supabase/supabase-js";
 import { errorHandler, responseErrorType } from "./util";
+import { useSessionStorage } from "../hooks/useSessionStorage";
 
 export type sessionState = {
   session?: Session;
+  user?: User;
+  ebayToken?: EbayTokenType;
   errorMessage?: responseErrorType;
   isRequesting: boolean;
 };
@@ -21,6 +25,18 @@ const initialState: sessionState = {
   session: undefined,
   errorMessage: undefined,
   isRequesting: false,
+};
+
+const setSessionStorage = (
+  session: Session,
+  user: User,
+  ebayToken: EbayTokenType
+) => {
+  const { setSupabaseSessionToken, setSupabaseUser, setEbaySessionToken } =
+    useSessionStorage();
+  setSupabaseSessionToken(session);
+  setSupabaseUser(user);
+  setEbaySessionToken(ebayToken);
 };
 
 export const sessionSlice = createSlice({
@@ -34,10 +50,32 @@ export const sessionSlice = createSlice({
       state.errorMessage = action.payload;
     },
     setLoginSuccess: (state, action: PayloadAction<LoginResponseType>) => {
-      state.session = action.payload.data.session || undefined;
+      if (!action.payload.data.session || !action.payload.data.user) {
+        return;
+      }
+      state.session = action.payload.data.session;
+      state.user = action.payload.data.user;
+      state.ebayToken = action.payload.ebayToken;
+
+      setSessionStorage(
+        action.payload.data.session,
+        action.payload.data.user,
+        action.payload.ebayToken
+      );
     },
     setSignUpSuccess: (state, action: PayloadAction<SignUpResponseType>) => {
-      state.session = action.payload.data.session || undefined;
+      if (!action.payload.data.session || !action.payload.data.user) {
+        return;
+      }
+      state.session = action.payload.data.session;
+      state.user = action.payload.data.user;
+      state.ebayToken = action.payload.ebayToken;
+
+      setSessionStorage(
+        action.payload.data.session,
+        action.payload.data.user,
+        action.payload.ebayToken
+      );
     },
     finishRequest: (state) => {
       state.isRequesting = false;

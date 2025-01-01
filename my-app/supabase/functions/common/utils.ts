@@ -1,3 +1,11 @@
+import axios from "npm:axios";
+import { load } from "npm:cheerio";
+
+// https文字列で定数として定義
+export const yahooFinanceDollarToYenExchangeURL =
+  "https://finance.yahoo.co.jp/quote/USDJPY=FX";
+export const ebayBaseUrl = "https://www.ebay.com/sch/i.html?";
+
 export const methodPatttern = {
   OPTIONS: "OPTIONS",
   GET: "GET",
@@ -21,4 +29,16 @@ export const corsHeaders = {
 export const optionsResponse = () => {
   console.log("options response");
   return new Response("oK", { headers: corsHeaders });
+};
+
+export const getDollar2YenExchangeRate = async (): Promise<number> => {
+  try {
+    const response = await axios.get(yahooFinanceDollarToYenExchangeURL);
+    const $ = load(response.data);
+    const rate = $("._FxRateItem__number_1ye8x_48").text().slice(0, 3);
+    return Number(rate);
+  } catch (error) {
+    console.error("Error in getDollar2YenExchangeRate: ", error);
+    return 0;
+  }
 };
