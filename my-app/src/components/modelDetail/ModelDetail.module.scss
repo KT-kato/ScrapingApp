@@ -1,0 +1,19 @@
+.modelDetailContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-grow: 1;
+}
+
+.modelDetailTable {
+  width: 100%;
+  th:first-child,
+  td:first-child {
+    width: 60%;
+  }
+  tr {
+    text-align: left;
+  }
+}

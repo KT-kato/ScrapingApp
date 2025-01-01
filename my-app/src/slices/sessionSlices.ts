@@ -3,16 +3,25 @@ import { getSessionToken, signUpNewUser } from "../api/session";
 import { AppThunk } from "./store";
 import { AxiosError } from "axios";
 import {
+  EbayTokenType,
   LoginRequestBody,
   LoginResponseType,
   SignUpRequestBody,
   SignUpResponseType,
 } from "../api/session/types";
-import { Session } from "@supabase/supabase-js";
-import { errorHandler, responseErrorType } from "./util";
+import { Session, User } from "@supabase/supabase-js";
+import {
+  errorHandler,
+  responseErrorType,
+  setEbaySessionToken,
+  setSupabaseSessionToken,
+  setSupabaseUser,
+} from "./util";
 
 export type sessionState = {
   session?: Session;
+  user?: User;
+  ebayToken?: EbayTokenType;
   errorMessage?: responseErrorType;
   isRequesting: boolean;
 };
@@ -34,10 +43,28 @@ export const sessionSlice = createSlice({
       state.errorMessage = action.payload;
     },
     setLoginSuccess: (state, action: PayloadAction<LoginResponseType>) => {
-      state.session = action.payload.data.session || undefined;
+      if (!action.payload.data.session || !action.payload.data.user) {
+        return;
+      }
+      state.session = action.payload.data.session;
+      state.user = action.payload.data.user;
+      state.ebayToken = action.payload.ebayToken;
+
+      setSupabaseSessionToken(action.payload.data.session);
+      setSupabaseUser(action.payload.data.user);
+      setEbaySessionToken(action.payload.ebayToken);
     },
     setSignUpSuccess: (state, action: PayloadAction<SignUpResponseType>) => {
-      state.session = action.payload.data.session || undefined;
+      if (!action.payload.data.session || !action.payload.data.user) {
+        return;
+      }
+      state.session = action.payload.data.session;
+      state.user = action.payload.data.user;
+      state.ebayToken = action.payload.ebayToken;
+
+      setSupabaseSessionToken(action.payload.data.session);
+      setSupabaseUser(action.payload.data.user);
+      setEbaySessionToken(action.payload.ebayToken);
     },
     finishRequest: (state) => {
       state.isRequesting = false;

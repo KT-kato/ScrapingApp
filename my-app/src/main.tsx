@@ -8,6 +8,7 @@ import { store } from "./slices/store.ts";
 import { Login } from "./components/login/Login.tsx";
 import { Home } from "./components/home/Home.tsx";
 import { Signup } from "./components/signup/Signup.tsx";
+import { ModelDetail } from "./components/modelDetail/ModelDetail.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -17,6 +18,7 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/home/:modelId" element={<ModelDetail />} />
         </Routes>
       </BrowserRouter>
     </Provider>

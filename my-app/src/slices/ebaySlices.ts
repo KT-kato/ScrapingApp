@@ -1,15 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { getEbayAccessToken } from "../api/ebay";
+import { getEbayAccessToken, getEbayBlandList } from "../api/ebay";
 import { AppThunk } from "./store";
 import { AxiosError } from "axios";
-import { ebayTokenResponseType } from "../api/ebay/type";
+import {
+  ebayGetBlandListQueryParameters,
+  ebayGetBlandListResponseType,
+  ebayTokenResponseType,
+} from "../api/ebay/type";
 
 export type ebayState = {
   ebayToken?: ebayTokenResponseType;
+  blandList: ebayGetBlandListResponseType;
 };
 
 const initialState: ebayState = {
   ebayToken: undefined,
+  blandList: {
+    url: "",
+    items: [],
+  },
 };
 
 export const ebaySlice = createSlice({
@@ -19,10 +28,16 @@ export const ebaySlice = createSlice({
     setEbayToken: (state, action: PayloadAction<ebayTokenResponseType>) => {
       state.ebayToken = action.payload;
     },
+    getEbayBlandListAction: (
+      state,
+      action: PayloadAction<ebayGetBlandListResponseType>
+    ) => {
+      state.blandList = action.payload;
+    },
   },
 });
 
-export const { setEbayToken } = ebaySlice.actions;
+export const { setEbayToken, getEbayBlandListAction } = ebaySlice.actions;
 
 export const getEbayToken = (): AppThunk => (dispatch) => {
   getEbayAccessToken()
@@ -34,5 +49,20 @@ export const getEbayToken = (): AppThunk => (dispatch) => {
     });
   return;
 };
+
+export const getEbayBlandItems =
+  (queryParameters: ebayGetBlandListQueryParameters): AppThunk =>
+  (dispatch) => {
+    getEbayBlandList(queryParameters)
+      .then((response) => {
+        dispatch(getEbayBlandListAction(response.data));
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
+    return;
+  };
+
+export const selectEbayStatus = (state: { ebay: ebayState }) => state.ebay;
 
 export default ebaySlice.reducer;
