@@ -12,8 +12,13 @@
   "dependencies": {
     "@reduxjs/toolkit": "^2.3.0",
     "@supabase/supabase-js": "^2.46.1",
-    "axios": "^1.7.7",
+    "@types/axios": "^0.14.4",
+    "@types/cheerio": "^0.22.35",
+    "@types/ebay-oauth-nodejs-client": "^1.2.4",
+    "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
+    "cheerio": "^1.0.0",
+    "ebay-oauth-nodejs-client": "^1.2.2",
     "highcharts": "^11.4.8",
     "highcharts-react-official": "^3.2.1",
     "react": "^18.3.1",
@@ -21,6 +26,7 @@
     "react-redux": "^9.1.2",
     "react-router": "^7.0.2",
     "reactstrap": "^9.2.3",
+    "redaxios": "^0.5.1",
     "redux": "^5.0.1",
     "ts-pattern": "^5.5.0"
   },

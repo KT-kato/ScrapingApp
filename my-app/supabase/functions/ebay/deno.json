@@ -1,6 +1,9 @@
 {
   "imports": {
     "@std/assert": "jsr:@std/assert@^1.0.0",
-    "ts-pattern": "npm:ts-pattern@^5.5.0"
+    "ts-pattern": "npm:ts-pattern@^5.5.0",
+    "ebay-oauth-nodejs-client": "npm:ebay-oauth-nodejs-client@^1.2.2",
+    "redaxios": "npm:redaxios@0.5.1",
+    "cheerio": "npm:cheerio@1.0.0"
   }
 }
