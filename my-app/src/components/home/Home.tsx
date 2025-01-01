@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardBody,
   CardTitle,
@@ -16,6 +17,7 @@ import { useEffect, useMemo, useState } from "react";
 import { getEbayToken } from "../../slices/ebaySlices";
 import { useDispatch } from "../../slices/store";
 import { Page } from "../page/Page";
+import { useNavigate } from "react-router";
 
 const listSapmle = [
   {
@@ -176,6 +178,7 @@ export const Home = () => {
   const [selectedItem, setSelectedItem] = useState("");
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(getEbayToken());
@@ -321,7 +324,11 @@ export const Home = () => {
                 <tbody>
                   {detailSample.modelSalsePerformances.map((item) => (
                     <tr key={item.id}>
-                      <td>{item.model}</td>
+                      <td>
+                        <Button onClick={() => navigate(`/home/${item.id}`)}>
+                          {item.model}
+                        </Button>
+                      </td>
                       <td>{item.soldCount}</td>
                       <td>{item.activeCount}</td>
                       <td>{item.soldMinPrice}</td>
