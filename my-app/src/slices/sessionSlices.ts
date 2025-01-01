@@ -10,8 +10,13 @@ import {
   SignUpResponseType,
 } from "../api/session/types";
 import { Session, User } from "@supabase/supabase-js";
-import { errorHandler, responseErrorType } from "./util";
-import { useSessionStorage } from "../hooks/useSessionStorage";
+import {
+  errorHandler,
+  responseErrorType,
+  setEbaySessionToken,
+  setSupabaseSessionToken,
+  setSupabaseUser,
+} from "./util";
 
 export type sessionState = {
   session?: Session;
@@ -25,18 +30,6 @@ const initialState: sessionState = {
   session: undefined,
   errorMessage: undefined,
   isRequesting: false,
-};
-
-const setSessionStorage = (
-  session: Session,
-  user: User,
-  ebayToken: EbayTokenType
-) => {
-  const { setSupabaseSessionToken, setSupabaseUser, setEbaySessionToken } =
-    useSessionStorage();
-  setSupabaseSessionToken(session);
-  setSupabaseUser(user);
-  setEbaySessionToken(ebayToken);
 };
 
 export const sessionSlice = createSlice({
@@ -57,11 +50,9 @@ export const sessionSlice = createSlice({
       state.user = action.payload.data.user;
       state.ebayToken = action.payload.ebayToken;
 
-      setSessionStorage(
-        action.payload.data.session,
-        action.payload.data.user,
-        action.payload.ebayToken
-      );
+      setSupabaseSessionToken(action.payload.data.session);
+      setSupabaseUser(action.payload.data.user);
+      setEbaySessionToken(action.payload.ebayToken);
     },
     setSignUpSuccess: (state, action: PayloadAction<SignUpResponseType>) => {
       if (!action.payload.data.session || !action.payload.data.user) {
@@ -71,11 +62,9 @@ export const sessionSlice = createSlice({
       state.user = action.payload.data.user;
       state.ebayToken = action.payload.ebayToken;
 
-      setSessionStorage(
-        action.payload.data.session,
-        action.payload.data.user,
-        action.payload.ebayToken
-      );
+      setSupabaseSessionToken(action.payload.data.session);
+      setSupabaseUser(action.payload.data.user);
+      setEbaySessionToken(action.payload.ebayToken);
     },
     finishRequest: (state) => {
       state.isRequesting = false;

@@ -26,18 +26,6 @@ export const useSessionStorage = () => {
     return undefined;
   };
 
-  const setSupabaseSessionToken = (session: Session) => {
-    sessionStorage.setItem("supabaseSessionToken", JSON.stringify(session));
-  };
-
-  const setSupabaseUser = (user: User) => {
-    sessionStorage.setItem("supabaseUser", JSON.stringify(user));
-  };
-
-  const setEbaySessionToken = (ebayToken: EbayTokenType) => {
-    sessionStorage.setItem("ebaySessionToken", JSON.stringify(ebayToken));
-  };
-
   const clearSessionStorage = () => {
     sessionStorage.removeItem("supabaseSessionToken");
     sessionStorage.removeItem("supabaseUser");
@@ -48,9 +36,6 @@ export const useSessionStorage = () => {
     getSupabaseSessionToken,
     getSupabaseUser,
     getEbaySessionToken,
-    setSupabaseSessionToken,
-    setSupabaseUser,
-    setEbaySessionToken,
     clearSessionStorage,
   };
 };
