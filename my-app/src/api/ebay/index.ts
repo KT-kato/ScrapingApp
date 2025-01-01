@@ -15,7 +15,7 @@ export const getEbayBlandList = async (
   const headers = {
     "Content-Type": "application/json",
   };
-  return await axios.get(`${supabaseLocalBaseUrl}/ebay/getItemList`, {
+  return await axios.get(`${supabaseLocalBaseUrl}/ebay/bland-list`, {
     headers,
     params: queryParameters,
   });
