@@ -1,13 +1,35 @@
 import axios from "npm:axios";
 import { corsHeaders, supabaseClient } from "../common/utils.ts";
-import { ebayPostBlandListRequestBody, Item } from "./utils/types.ts";
+import {
+  ebayPostBlandModelStatisticsRequestBody,
+  Item,
+} from "./utils/types.ts";
 import { CheerioAPI, load } from "npm:cheerio";
 import { Element } from "npm:domhandler";
 
+type PathIds = {
+  blandId: string | null;
+};
+
+const getIdsFromPath = (path: string): PathIds => {
+  const regex = /\/ebay\/bland\/([^/]+)\/models\/statistics/;
+  const match = path.match(regex);
+
+  if (match) {
+    return {
+      blandId: match[1] || null,
+    };
+  }
+  return {
+    blandId: null,
+  };
+};
+
 export const getQueryParametersForEbay = (
-  requestBody: ebayPostBlandListRequestBody,
+  modelName: string,
+  requestBody: ebayPostBlandModelStatisticsRequestBody
 ) => {
-  const keyword = requestBody.keyword || "";
+  const keyword = modelName;
   const blandModelNumber = requestBody.blandModelNumber || "";
   const ebayBaseQueryParameters = {
     _nkw: `${keyword} ${blandModelNumber}`, // 商品のキーワード（検索欄の内容）
@@ -88,26 +110,26 @@ export const getItemList = async (ebayItemUrl: string) => {
       $(element).map((_, element) => {
         const itemName = getItemName($, element);
         const itemPriceYen = Number(
-          getItemPriceYen($, element).replace(/\D/g, ""),
+          getItemPriceYen($, element).replace(/\D/g, "")
         );
         const itemShippingCost = getItemShippingCost($, element).replace(
           /\D/g,
-          "",
+          ""
         );
 
         if (itemName == "Shop on eBay") {
           return items;
         }
 
-        const itemShippingCostYen = itemShippingCost === ""
-          ? 0
-          : Number(itemShippingCost);
+        const itemShippingCostYen =
+          itemShippingCost === "" ? 0 : Number(itemShippingCost);
 
         items.push({
           itemName,
-          itemPrice: itemShippingCost === ""
-            ? String(itemPriceYen)
-            : String(itemPriceYen + itemShippingCostYen),
+          itemPrice:
+            itemShippingCost === ""
+              ? String(itemPriceYen)
+              : String(itemPriceYen + itemShippingCostYen),
           itemShippingCost: itemShippingCostYen.toString(),
         });
       });
@@ -131,7 +153,7 @@ type itemDetail = {
 
 export const addItemDetail = async (
   soldItemDetail: itemDetail,
-  unSoldItemDetail: itemDetail,
+  unSoldItemDetail: itemDetail
 ) => {
   try {
     const targetSoldData = await supabaseClient
@@ -150,10 +172,12 @@ export const addItemDetail = async (
       .eq("completed", false)
       .eq("sold", false);
 
-    const existTargetSoldData = targetSoldData.data &&
+    const existTargetSoldData =
+      targetSoldData.data &&
       targetSoldData.data.length > 0 &&
       targetSoldData.data[0].items.length > 0;
-    const existTargetUnSoldData = targetUnSoldData.data &&
+    const existTargetUnSoldData =
+      targetUnSoldData.data &&
       targetUnSoldData.data.length > 0 &&
       targetUnSoldData.data[0].items.length > 0;
     const responseData = {
@@ -205,38 +229,79 @@ export const addItemDetail = async (
       {
         status: 400,
         headers: { "Content-Type": "application/json", ...corsHeaders },
-      },
+      }
     );
   }
 };
 
 // 特定のキーワードとカテゴリーのIDを元に、ebayの商品リストを取得する
-export const postBlandItems = async (req: Request) => {
-  const requestBody: ebayPostBlandListRequestBody = await req.json();
-  const ebayQueries = getQueryParametersForEbay(requestBody);
-  const ebaySoldUrl = `https://www.ebay.com/sch/i.html?${ebayQueries.sold}`;
-  const ebayUnSoldUrl = `https://www.ebay.com/sch/i.html?${ebayQueries.unSold}`;
-  console.log(ebaySoldUrl);
-  const soldItems = await getItemList(ebaySoldUrl);
-  const unSoldItems = await getItemList(ebayUnSoldUrl);
+export const postBlandModelStatistics = async (req: Request) => {
+  const requestBody: ebayPostBlandModelStatisticsRequestBody = await req.json();
+  const blandId = getIdsFromPath(req.url).blandId;
+  if (!blandId) {
+    return new Response(
+      JSON.stringify({
+        error: "Invalid path",
+      }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
+  }
 
-  const soldItemDetail = {
-    bland_name: requestBody.keyword,
-    bland_model_number: requestBody.blandModelNumber,
-    completed: true,
-    sold: true,
-    country: requestBody.country,
-    location: requestBody.location,
-    items: soldItems,
-  };
-  const unSoldItemDetail = {
-    bland_name: requestBody.keyword,
-    bland_model_number: requestBody.blandModelNumber,
-    completed: false,
-    sold: false,
-    country: requestBody.country,
-    location: requestBody.location,
-    items: unSoldItems,
-  };
-  return addItemDetail(soldItemDetail, unSoldItemDetail);
+  try {
+    const bland = await supabaseClient
+      .from("item_bland")
+      .select("*")
+      .eq("id", blandId);
+    if (!bland.data || bland.data.length === 0) {
+      return new Response(
+        JSON.stringify({
+          error: "Invalid path",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        }
+      );
+    }
+
+    const blandName = bland.data[0].bland_name;
+    const ebayQueries = getQueryParametersForEbay(blandName, requestBody);
+    const ebaySoldUrl = `https://www.ebay.com/sch/i.html?${ebayQueries.sold}`;
+    const ebayUnSoldUrl = `https://www.ebay.com/sch/i.html?${ebayQueries.unSold}`;
+    const soldItems = await getItemList(ebaySoldUrl);
+    const unSoldItems = await getItemList(ebayUnSoldUrl);
+
+    const soldItemDetail = {
+      bland_name: blandName,
+      bland_model_number: requestBody.blandModelNumber,
+      completed: true,
+      sold: true,
+      country: requestBody.country,
+      location: requestBody.location,
+      items: soldItems,
+    };
+    const unSoldItemDetail = {
+      bland_name: blandName,
+      bland_model_number: requestBody.blandModelNumber,
+      completed: false,
+      sold: false,
+      country: requestBody.country,
+      location: requestBody.location,
+      items: unSoldItems,
+    };
+    return addItemDetail(soldItemDetail, unSoldItemDetail);
+  } catch {
+    return new Response(
+      JSON.stringify({
+        error: "Invalid path",
+      }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      }
+    );
+  }
 };
