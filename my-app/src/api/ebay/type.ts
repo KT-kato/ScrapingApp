@@ -64,3 +64,10 @@ export type getBlandStatisticType = {
 export type getBlandStatisticListResponseType = {
   statisticList: getBlandStatisticType[];
 };
+
+export type ebayPostBlandModelStatisticsRequestBody = {
+  blandModelNumber: string;
+  categoryId: string;
+  country: string;
+  location: string;
+};
