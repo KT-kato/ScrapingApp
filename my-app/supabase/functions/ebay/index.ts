@@ -13,7 +13,7 @@ import { match } from "jsr:@gabriel/ts-pattern";
 import { BadRequest } from "../common/errorResponses.ts";
 import { getEbayAuthToken } from "./login.ts";
 import { getBlandModelList } from "./getBlandModelList.ts";
-import { postBlandItems } from "./postBlandList.ts";
+import { postBlandModelStatistics } from "./postBlandModelStatistics.ts";
 import { getBlandList } from "./getBlandList.ts";
 import { getBlandStatisticsList } from "./getBlandStatisticsList.ts";
 import { getBlandStatistics } from "./getBlandStatistics.ts";
@@ -33,9 +33,7 @@ Deno.serve(async (_req: Request) => {
       if (/\/ebay\/bland\/[^/]+\/models\/[^/]+$/.test(_req.url)) {
         return await getBlandStatistics(_req);
       }
-      if (
-        /\/ebay\/bland\/[^/]+\/bland-statistics$/.test(_req.url)
-      ) {
+      if (/\/ebay\/bland\/[^/]+\/bland-statistics$/.test(_req.url)) {
         return await getBlandStatisticsList(_req);
       }
       if (_req.url.includes("/ebay/login")) {
@@ -44,8 +42,8 @@ Deno.serve(async (_req: Request) => {
       return mockResponse();
     })
     .with(methodPatttern.POST, () => {
-      if (_req.url.includes("/ebay/bland-list")) {
-        return postBlandItems(_req);
+      if (/\/ebay\/bland\/[^/]+\/models\/statistics$/.test(_req.url)) {
+        return postBlandModelStatistics(_req);
       }
       return mockResponse();
     })
