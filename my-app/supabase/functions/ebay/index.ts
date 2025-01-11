@@ -12,9 +12,11 @@ import {
 import { match } from "jsr:@gabriel/ts-pattern";
 import { BadRequest } from "../common/errorResponses.ts";
 import { getEbayAuthToken } from "./login.ts";
-import { getBlandList } from "./getblandList.ts";
-
-console.log("Hello from Functions!");
+import { getBlandModelList } from "./getBlandModelList.ts";
+import { postBlandItems } from "./postBlandList.ts";
+import { getBlandList } from "./getBlandList.ts";
+import { getBlandStatisticsList } from "./getBlandStatisticsList.ts";
+import { getBlandStatistics } from "./getBlandStatistics.ts";
 
 Deno.serve(async (_req: Request) => {
   const requestMethod = _req.method;
@@ -22,15 +24,31 @@ Deno.serve(async (_req: Request) => {
   return await match(requestMethod)
     .with(methodPatttern.OPTIONS, () => optionsResponse())
     .with(methodPatttern.GET, async () => {
-      if (_req.url.includes("/ebay/bland-list")) {
-        return await getBlandList(_req);
+      if (/\/ebay\/bland$/.test(_req.url)) {
+        return await getBlandList();
+      }
+      if (/\/ebay\/bland\/[^/]+\/models$/.test(_req.url)) {
+        return await getBlandModelList(_req);
+      }
+      if (/\/ebay\/bland\/[^/]+\/models\/[^/]+$/.test(_req.url)) {
+        return await getBlandStatistics(_req);
+      }
+      if (
+        /\/ebay\/bland\/[^/]+\/bland-statistics$/.test(_req.url)
+      ) {
+        return await getBlandStatisticsList(_req);
       }
       if (_req.url.includes("/ebay/login")) {
         return await getEbayAuthToken();
       }
       return mockResponse();
     })
-    .with(methodPatttern.POST, () => mockResponse())
+    .with(methodPatttern.POST, () => {
+      if (_req.url.includes("/ebay/bland-list")) {
+        return postBlandItems(_req);
+      }
+      return mockResponse();
+    })
     .with(methodPatttern.PUT, () => mockResponse())
     .with(methodPatttern.DELETE, () => mockResponse())
     .with(methodPatttern.PATCH, () => mockResponse())
