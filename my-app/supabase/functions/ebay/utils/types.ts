@@ -10,8 +10,7 @@ export type ebayGetBlandListRequestType = {
   filter: string;
 };
 
-export type ebayPostBlandListRequestBody = {
-  keyword: string;
+export type ebayPostBlandModelStatisticsRequestBody = {
   blandModelNumber: string;
   categoryId: string;
   country: string;

@@ -1,0 +1,52 @@
+.tableWrapper {
+  overflow: auto;
+  width: 100%;
+  height: 450px;
+}
+
+.salesPerformanceTable {
+  position: relative;
+  width: 100%;
+  border-collapse: collapse !important;
+
+  td,
+  th {
+    width: 200px;
+    white-space: nowrap;
+    padding: 8px;
+    z-index: 1;
+  }
+
+  // ヘッダーの固定
+  thead {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    th {
+      background-color: #f2f2f2;
+    }
+  }
+
+  // 一番左の列を固定する
+  th:first-child,
+  td:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+  }
+
+  // 偶数列と奇数列の背景色を設定
+  tr {
+    td:first-child {
+      background-color: inherit;
+    }
+
+    &:nth-child(even) {
+      background-color: #f2f2f2;
+    }
+
+    &:nth-child(odd) {
+      background-color: #ffffff;
+    }
+  }
+}

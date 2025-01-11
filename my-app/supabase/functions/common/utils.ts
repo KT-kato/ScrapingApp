@@ -46,5 +46,5 @@ export const getDollar2YenExchangeRate = async (): Promise<number> => {
 
 export const supabaseClient = createClient(
   Deno.env.get("URL")!,
-  Deno.env.get("ANON_KEY")!,
+  Deno.env.get("ANON_KEY")!
 );

@@ -1,0 +1,7 @@
+{
+  "imports": {
+    "redaxios": "npm:redaxios@0.5.1",
+    "cheerio": "npm:cheerio@1.0.0",
+    "supabase": "npm:supabase@^1.0.0"
+  }
+}
