@@ -8,23 +8,33 @@ import {
 } from "./types";
 
 export const getSessionToken = async (
-  body: LoginRequestBody
+  body: LoginRequestBody,
 ): Promise<LoginResponseType> => {
   const headers = {
     "Content-Type": "application/json",
   };
-  return await axios.post(`${supabaseLocalBaseUrl}/session/login`, body, {
-    headers,
-  });
+  const response = await axios.post(
+    `${supabaseLocalBaseUrl}/session/login`,
+    body,
+    {
+      headers,
+    },
+  );
+  return response.data;
 };
 
 export const signUpNewUser = async (
-  body: SignUpRequestBody
+  body: SignUpRequestBody,
 ): Promise<SignUpResponseType> => {
   const headers = {
     "Content-Type": "application/json",
   };
-  return await axios.post(`${supabaseLocalBaseUrl}/session/signup`, body, {
-    headers,
-  });
+  const response = await axios.post(
+    `${supabaseLocalBaseUrl}/session/signup`,
+    body,
+    {
+      headers,
+    },
+  );
+  return response.data;
 };

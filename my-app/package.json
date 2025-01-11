@@ -11,10 +11,11 @@
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.3.0",
-    "@supabase/supabase-js": "^2.46.1",
+    "@supabase/supabase-js": "^2.47.10",
     "@types/axios": "^0.14.4",
     "@types/cheerio": "^0.22.35",
     "@types/ebay-oauth-nodejs-client": "^1.2.4",
+    "@types/node": "^22.10.3",
     "axios": "^1.7.9",
     "bootstrap": "^5.3.3",
     "cheerio": "^1.0.0",

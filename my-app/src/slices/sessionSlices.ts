@@ -43,27 +43,28 @@ export const sessionSlice = createSlice({
       state.errorMessage = action.payload;
     },
     setLoginSuccess: (state, action: PayloadAction<LoginResponseType>) => {
-      if (!action.payload.data.session || !action.payload.data.user) {
+      console.log(action.payload);
+      if (!action.payload) {
         return;
       }
-      state.session = action.payload.data.session;
-      state.user = action.payload.data.user;
+      state.session = action.payload.session;
+      state.user = action.payload.user;
       state.ebayToken = action.payload.ebayToken;
 
-      setSupabaseSessionToken(action.payload.data.session);
-      setSupabaseUser(action.payload.data.user);
+      setSupabaseSessionToken(action.payload.session);
+      setSupabaseUser(action.payload.user);
       setEbaySessionToken(action.payload.ebayToken);
     },
     setSignUpSuccess: (state, action: PayloadAction<SignUpResponseType>) => {
-      if (!action.payload.data.session || !action.payload.data.user) {
+      if (!action.payload.session || !action.payload.user) {
         return;
       }
-      state.session = action.payload.data.session;
-      state.user = action.payload.data.user;
+      state.session = action.payload.session;
+      state.user = action.payload.user;
       state.ebayToken = action.payload.ebayToken;
 
-      setSupabaseSessionToken(action.payload.data.session);
-      setSupabaseUser(action.payload.data.user);
+      setSupabaseSessionToken(action.payload.session);
+      setSupabaseUser(action.payload.user);
       setEbaySessionToken(action.payload.ebayToken);
     },
     finishRequest: (state) => {
@@ -80,35 +81,31 @@ export const {
   finishRequest,
 } = sessionSlice.actions;
 
-export const login =
-  (data: LoginRequestBody): AppThunk =>
-  (dispatch) => {
-    dispatch(startReqirest());
-    getSessionToken(data)
-      .then((response) => {
-        dispatch(setLoginSuccess(response));
-      })
-      .catch((error: AxiosError) =>
-        dispatch(setErrorMessage(errorHandler(error)))
-      )
-      .finally(() => dispatch(finishRequest()));
-    return;
-  };
+export const login = (data: LoginRequestBody): AppThunk => (dispatch) => {
+  dispatch(startReqirest());
+  getSessionToken(data)
+    .then((response) => {
+      dispatch(setLoginSuccess(response));
+    })
+    .catch((error: AxiosError) => {
+      dispatch(setErrorMessage(errorHandler(error)));
+    })
+    .finally(() => dispatch(finishRequest()));
+  return;
+};
 
-export const signUpUser =
-  (data: SignUpRequestBody): AppThunk =>
-  (dispatch) => {
-    dispatch(startReqirest());
-    signUpNewUser(data)
-      .then((response) => {
-        dispatch(setSignUpSuccess(response));
-      })
-      .catch((error: AxiosError) =>
-        dispatch(setErrorMessage(errorHandler(error)))
-      )
-      .finally(() => dispatch(finishRequest()));
-    return;
-  };
+export const signUpUser = (data: SignUpRequestBody): AppThunk => (dispatch) => {
+  dispatch(startReqirest());
+  signUpNewUser(data)
+    .then((response) => {
+      dispatch(setSignUpSuccess(response));
+    })
+    .catch((error: AxiosError) => {
+      dispatch(setErrorMessage(errorHandler(error)));
+    })
+    .finally(() => dispatch(finishRequest()));
+  return;
+};
 
 export const selectSessionStatus = (state: { session: sessionState }) =>
   state.session;

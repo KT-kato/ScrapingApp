@@ -1,6 +1,5 @@
 import axios from "axios";
 import { supabaseLocalBaseUrl } from "../constants";
-import { ebayGetBlandListQueryParameters } from "./type";
 
 export const getEbayAccessToken = async () => {
   const headers = {
@@ -9,14 +8,44 @@ export const getEbayAccessToken = async () => {
   return await axios.get(`${supabaseLocalBaseUrl}/ebay/login`, { headers });
 };
 
-export const getEbayBlandList = async (
-  queryParameters: ebayGetBlandListQueryParameters
+export const getEbayBlandList = async () => {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  return await axios.get(`${supabaseLocalBaseUrl}/ebay/bland`, {
+    headers,
+  });
+};
+
+export const getEbayModelList = async (blandId: number) => {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  return await axios.get(
+    `${supabaseLocalBaseUrl}/ebay/bland/${blandId}/models`,
+    { headers },
+  );
+};
+
+export const getEbayBlandStatistics = async (
+  blandId: number,
+  modelId: number,
 ) => {
   const headers = {
     "Content-Type": "application/json",
   };
-  return await axios.get(`${supabaseLocalBaseUrl}/ebay/bland-list`, {
-    headers,
-    params: queryParameters,
-  });
+  return await axios.get(
+    `${supabaseLocalBaseUrl}/ebay/bland/${blandId}/models/${modelId}`,
+    { headers },
+  );
+};
+
+export const getEbayBlandStatisticList = async (blandId: number) => {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  return await axios.get(
+    `${supabaseLocalBaseUrl}/ebay/bland/${blandId}/bland-statistics`,
+    { headers },
+  );
 };
