@@ -1,5 +1,4 @@
 import {
-  Button,
   Card,
   CardBody,
   CardTitle,
@@ -23,18 +22,7 @@ import { useDispatch, useSelector } from "../../slices/store";
 import { Page } from "../page/Page";
 import { useNavigate } from "react-router";
 import { shallowEqual } from "react-redux";
-
-const TABLE_HEADER = [
-  "Model",
-  "Sold Count",
-  "Active Count",
-  "Sold Min Price",
-  "Sold Max Price",
-  "Sold Avg Price",
-  "Active Min Price",
-  "Active Max Price",
-  "Active Avg Price",
-];
+import { SalesPerformanceTable } from "../salesPerformanceTable/SalesPerformanceTable";
 
 export const Home = () => {
   const [isOpenChartSelector, setIsOpenChartSelector] = useState(false);
@@ -61,10 +49,6 @@ export const Home = () => {
     setSelectedBlandId(blandList[0].id);
     dispatch(getBlandStatisticList(blandList[0].id));
   }, [blandList, dispatch]);
-
-  useEffect(() => {
-    setSelectedItem(TABLE_HEADER[1]);
-  }, []);
 
   const soldCountData = useMemo(() => {
     return blandStatisticList.map((item) => ({
@@ -151,7 +135,7 @@ export const Home = () => {
       },
       xAxis: {
         categories: blandStatisticList.map(
-          (item) => item.modelId.toString(),
+          (item) => item.blandModelName,
         ),
       },
       series: [
@@ -196,46 +180,22 @@ export const Home = () => {
         <Card className={styles.detailCard}>
           <CardBody className={styles.detailCardBody}>
             <CardTitle tag="h5">Salse Performance</CardTitle>
-            <div className={styles.tableWrapper}>
-              <table className={styles.salesPerformanceTable}>
-                <thead>
-                  <tr>
-                    {TABLE_HEADER.map((item) => <th key={item}>{item}</th>)}
-                  </tr>
-                </thead>
-                <tbody>
-                  {blandStatisticList.map((item) => (
-                    <tr key={item.modelId}>
-                      <td>
-                        <Button
-                          onClick={() =>
-                            navigate(
-                              `/home/bland/${selectedBlandId}/model/${item.modelId}`,
-                            )}
-                        >
-                          {item.blandModelName}
-                        </Button>
-                      </td>
-                      <td>{item.soldItems.itemCount}</td>
-                      <td>{item.unSoldItems.itemCount}</td>
-                      <td>{item.soldItems.minPrice}</td>
-                      <td>{item.soldItems.maxPrice}</td>
-                      <td>{item.soldItems.averagePrice}</td>
-                      <td>{item.unSoldItems.minPrice}</td>
-                      <td>{item.unSoldItems.maxPrice}</td>
-                      <td>{item.unSoldItems.averagePrice}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <SalesPerformanceTable
+              blandStatisticList={blandStatisticList}
+              handleItemClick={(modelId) =>
+                navigate(
+                  `/home/bland/${selectedBlandId}/model/${modelId}`,
+                )}
+            />
             <div className={styles.chartItemSelector}>
               <Dropdown
                 isOpen={isOpenChartSelector}
                 onClick={() => setIsOpenChartSelector(!isOpenChartSelector)}
                 className="me-2"
               >
-                <DropdownToggle caret>Select Performance Item</DropdownToggle>
+                <DropdownToggle caret>
+                  {selectedItem || "Select Sales Performance"}
+                </DropdownToggle>
                 <DropdownMenu container="body">
                   {chartItems.map((item) => (
                     <DropdownItem
