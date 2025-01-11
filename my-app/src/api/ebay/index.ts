@@ -1,5 +1,6 @@
 import axios from "axios";
 import { supabaseLocalBaseUrl } from "../constants";
+import { ebayPostBlandModelStatisticsRequestBody } from "./type";
 
 export const getEbayAccessToken = async () => {
   const headers = {
@@ -46,6 +47,20 @@ export const getEbayBlandStatisticList = async (blandId: number) => {
   };
   return await axios.get(
     `${supabaseLocalBaseUrl}/ebay/bland/${blandId}/bland-statistics`,
+    { headers },
+  );
+};
+
+export const postEbayBlandModelStatistics = async (
+  blandId: number,
+  data: ebayPostBlandModelStatisticsRequestBody,
+) => {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  return await axios.post(
+    `${supabaseLocalBaseUrl}/ebay/bland/${blandId}/models/statistics`,
+    { data },
     { headers },
   );
 };

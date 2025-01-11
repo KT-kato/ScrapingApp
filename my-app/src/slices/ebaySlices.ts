@@ -1,15 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {
-  getEbayAccessToken,
-  getEbayBlandList,
-  getEbayBlandStatisticList,
-  getEbayBlandStatistics,
-  getEbayModelList,
-} from "../api/ebay";
+import * as API from "../api/ebay";
 import { AppThunk } from "./store";
 import { AxiosError } from "axios";
 import {
   blandListType,
+  ebayPostBlandModelStatisticsRequestBody,
   ebayTokenResponseType,
   getBlandListResponseType,
   getBlandModelListResponseType,
@@ -67,6 +62,12 @@ export const ebaySlice = createSlice({
     ) => {
       state.blandStatisticList = action.payload.statisticList;
     },
+    postEbayBlandModelStatisticsAction: (
+      _state,
+      action: PayloadAction<ebayPostBlandModelStatisticsRequestBody>,
+    ) => {
+      console.log(action.payload);
+    },
   },
 });
 
@@ -76,10 +77,11 @@ export const {
   getEbayBlandStatisticListAction,
   getEbayBlandStatisticsAction,
   getEbayModelListAction,
+  postEbayBlandModelStatisticsAction,
 } = ebaySlice.actions;
 
 export const getEbayToken = (): AppThunk => (dispatch) => {
-  getEbayAccessToken()
+  API.getEbayAccessToken()
     .then((response) => {
       dispatch(setEbayToken(response.data));
     })
@@ -90,7 +92,7 @@ export const getEbayToken = (): AppThunk => (dispatch) => {
 };
 
 export const getBlandList = (): AppThunk => (dispatch) => {
-  getEbayBlandList()
+  API.getEbayBlandList()
     .then((response) => {
       dispatch(getEbayBlandListAction(response.data));
     })
@@ -101,7 +103,7 @@ export const getBlandList = (): AppThunk => (dispatch) => {
 };
 
 export const getBlandModels = (blandId: number): AppThunk => (dispatch) => {
-  getEbayModelList(blandId)
+  API.getEbayModelList(blandId)
     .then((response) => {
       dispatch(getEbayModelListAction(response.data));
     })
@@ -113,7 +115,7 @@ export const getBlandModels = (blandId: number): AppThunk => (dispatch) => {
 
 export const getBlandStatistics =
   (blandId: number, modelId: number): AppThunk => (dispatch) => {
-    getEbayBlandStatistics(blandId, modelId)
+    API.getEbayBlandStatistics(blandId, modelId)
       .then((response) => {
         dispatch(getEbayBlandStatisticsAction(response.data));
       })
@@ -125,7 +127,7 @@ export const getBlandStatistics =
 
 export const getBlandStatisticList =
   (blandId: number): AppThunk => (dispatch) => {
-    getEbayBlandStatisticList(blandId)
+    API.getEbayBlandStatisticList(blandId)
       .then((response) => {
         dispatch(getEbayBlandStatisticListAction(response.data));
       })
@@ -135,6 +137,20 @@ export const getBlandStatisticList =
     return;
   };
 
+export const postBlandModelStatistics =
+  (blandId: number, data: ebayPostBlandModelStatisticsRequestBody): AppThunk =>
+  (dispatch) => {
+    API.postEbayBlandModelStatistics(blandId, data)
+      .then((response) => {
+        if (response.data.success) {
+          dispatch(getBlandStatisticList(blandId));
+        }
+        dispatch(postEbayBlandModelStatisticsAction(response.data));
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
+  };
 export const selectEbayStatus = (state: { ebay: ebayState }) => state.ebay;
 
 export default ebaySlice.reducer;
