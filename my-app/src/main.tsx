@@ -18,9 +18,12 @@ createRoot(document.getElementById("root")!).render(
           <Route path="/" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/home/:modelId" element={<ModelDetail />} />
+          <Route
+            path="/home/bland/:blandId/model/:modelId"
+            element={<ModelDetail />}
+          />
         </Routes>
       </BrowserRouter>
     </Provider>
-  </StrictMode>
+  </StrictMode>,
 );
