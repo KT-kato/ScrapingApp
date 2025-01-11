@@ -1,4 +1,4 @@
-import { AuthResponse, AuthTokenResponse } from "@supabase/supabase-js";
+import { Session, User } from "@supabase/supabase-js";
 
 export type EbayTokenType = {
   access_token: string;
@@ -11,8 +11,10 @@ export type LoginRequestBody = {
   password: string;
 };
 
-export type LoginResponseType = AuthTokenResponse & {
+export type LoginResponseType = {
   ebayToken: EbayTokenType;
+  session: Session;
+  user: User;
 };
 
 export type SignUpRequestBody = {
@@ -20,6 +22,8 @@ export type SignUpRequestBody = {
   password: string;
 };
 
-export type SignUpResponseType = AuthResponse & {
+export type SignUpResponseType = {
   ebayToken: EbayTokenType;
+  session: Session;
+  user: User;
 };
