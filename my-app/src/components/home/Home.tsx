@@ -14,152 +14,15 @@ import styles from "./Home.module.scss";
 import Highcharts from "highcharts";
 import HighchartsReact from "highcharts-react-official";
 import { useEffect, useMemo, useState } from "react";
-import { getEbayToken } from "../../slices/ebaySlices";
-import { useDispatch } from "../../slices/store";
+import {
+  getBlandList,
+  getBlandStatisticList,
+  selectEbayStatus,
+} from "../../slices/ebaySlices";
+import { useDispatch, useSelector } from "../../slices/store";
 import { Page } from "../page/Page";
 import { useNavigate } from "react-router";
-
-const listSapmle = [
-  {
-    id: 1,
-    name: "seiko",
-  },
-  {
-    id: 2,
-    name: "rolex",
-  },
-  {
-    id: 3,
-    name: "citizen",
-  },
-];
-
-const detailSample = {
-  id: 1,
-  name: "seiko",
-  modelSalsePerformances: [
-    {
-      id: 1,
-      model: "001",
-      soldCount: 100,
-      activeCount: 10,
-      soldMinPrice: 10000,
-      soldMaxPrice: 20000,
-      soldAvgPrice: 15000,
-      activeMinPrice: 20000,
-      activeMaxPrice: 30000,
-      activeAvgPrice: 25000,
-    },
-    {
-      id: 2,
-      model: "002",
-      soldCount: 200,
-      activeCount: 20,
-      soldMinPrice: 20000,
-      soldMaxPrice: 30000,
-      soldAvgPrice: 25000,
-      activeMinPrice: 30000,
-      activeMaxPrice: 40000,
-      activeAvgPrice: 35000,
-    },
-    {
-      id: 3,
-      model: "003",
-      soldCount: 300,
-      activeCount: 30,
-      soldMinPrice: 30000,
-      soldMaxPrice: 40000,
-      soldAvgPrice: 35000,
-      activeMinPrice: 40000,
-      activeMaxPrice: 50000,
-      activeAvgPrice: 45000,
-    },
-    {
-      id: 4,
-      model: "004",
-      soldCount: 400,
-      activeCount: 40,
-      soldMinPrice: 40000,
-      soldMaxPrice: 50000,
-      soldAvgPrice: 45000,
-      activeMinPrice: 50000,
-      activeMaxPrice: 60000,
-      activeAvgPrice: 55000,
-    },
-    {
-      id: 5,
-      model: "005",
-      soldCount: 500,
-      activeCount: 50,
-      soldMinPrice: 50000,
-      soldMaxPrice: 60000,
-      soldAvgPrice: 55000,
-      activeMinPrice: 60000,
-      activeMaxPrice: 70000,
-      activeAvgPrice: 65000,
-    },
-    {
-      id: 6,
-      model: "006",
-      soldCount: 600,
-      activeCount: 60,
-      soldMinPrice: 60000,
-      soldMaxPrice: 70000,
-      soldAvgPrice: 65000,
-      activeMinPrice: 70000,
-      activeMaxPrice: 80000,
-      activeAvgPrice: 75000,
-    },
-    {
-      id: 7,
-      model: "007",
-      soldCount: 700,
-      activeCount: 70,
-      soldMinPrice: 70000,
-      soldMaxPrice: 80000,
-      soldAvgPrice: 75000,
-      activeMinPrice: 80000,
-      activeMaxPrice: 90000,
-      activeAvgPrice: 85000,
-    },
-    {
-      id: 8,
-      model: "008",
-      soldCount: 800,
-      activeCount: 80,
-      soldMinPrice: 80000,
-      soldMaxPrice: 90000,
-      soldAvgPrice: 85000,
-      activeMinPrice: 90000,
-      activeMaxPrice: 100000,
-      activeAvgPrice: 95000,
-    },
-    {
-      id: 9,
-      model: "009",
-      soldCount: 900,
-      activeCount: 90,
-      soldMinPrice: 90000,
-      soldMaxPrice: 100000,
-      soldAvgPrice: 95000,
-      activeMinPrice: 100000,
-      activeMaxPrice: 110000,
-      activeAvgPrice: 105000,
-    },
-    {
-      id: 10,
-      model: "010",
-      soldCount: 1000,
-      activeCount: 100,
-      soldMinPrice: 100000,
-      soldMaxPrice: 110000,
-      soldAvgPrice: 105000,
-      activeMinPrice: 110000,
-      activeMaxPrice: 120000,
-      activeAvgPrice: 115000,
-    },
-  ],
-};
+import { shallowEqual } from "react-redux";
 
 const TABLE_HEADER = [
   "Model",
@@ -175,74 +38,89 @@ const TABLE_HEADER = [
 
 export const Home = () => {
   const [isOpenChartSelector, setIsOpenChartSelector] = useState(false);
+  const [selectedBlandId, setSelectedBlandId] = useState<number | undefined>();
   const [selectedItem, setSelectedItem] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { blandList, blandStatisticList } = useSelector(
+    selectEbayStatus,
+    shallowEqual,
+  );
+
   useEffect(() => {
-    dispatch(getEbayToken());
+    dispatch(getBlandList());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (blandList.length === 0) {
+      return;
+    }
+    console.log("blandList: ", blandList);
+    setSelectedBlandId(blandList[0].id);
+    dispatch(getBlandStatisticList(blandList[0].id));
+  }, [blandList, dispatch]);
 
   useEffect(() => {
     setSelectedItem(TABLE_HEADER[1]);
   }, []);
 
   const soldCountData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.soldCount,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.soldItems.itemCount,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const activeCountData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.activeCount,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.unSoldItems.itemCount,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const soldMinPriceData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.soldMinPrice,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.soldItems.minPrice,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const soldMaxPriceData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.soldMaxPrice,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.soldItems.maxPrice,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const soldAvgPriceData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.soldAvgPrice,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.soldItems.averagePrice,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const activeMinPriceData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.activeMinPrice,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.unSoldItems.minPrice,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const activeMaxPriceData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.activeMaxPrice,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.unSoldItems.maxPrice,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const activeAvgPriceData = useMemo(() => {
-    return detailSample.modelSalsePerformances.map((item) => ({
-      key: item.model,
-      value: item.activeAvgPrice,
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.unSoldItems.averagePrice,
     }));
-  }, [detailSample.modelSalsePerformances]);
+  }, [blandStatisticList]);
 
   const chartItems = useMemo(() => {
     return [
@@ -272,8 +150,8 @@ export const Home = () => {
         text: "",
       },
       xAxis: {
-        categories: detailSample.modelSalsePerformances.map(
-          (item) => item.model
+        categories: blandStatisticList.map(
+          (item) => item.modelId.toString(),
         ),
       },
       series: [
@@ -286,7 +164,7 @@ export const Home = () => {
         },
       ],
     }),
-    [chartItems, selectedItem]
+    [chartItems, selectedItem, blandStatisticList],
   );
 
   return (
@@ -296,16 +174,22 @@ export const Home = () => {
           <CardBody>
             <CardTitle tag="h5">Bland List</CardTitle>
             <ListGroup className="my-5">
-              {listSapmle.map((item) => (
-                <ListGroupItem
-                  key={item.id}
-                  className={`list-group-item-action action ${styles.listGroupItem}`}
-                  href="#pablo"
-                  tag={"a"}
-                >
-                  {item.name}
-                </ListGroupItem>
-              ))}
+              {blandList.length > 0
+                ? blandList.map((item) => (
+                  <ListGroupItem
+                    key={item.id}
+                    className={`list-group-item-action action ${styles.listGroupItem}`}
+                    href="#pablo"
+                    tag={"a"}
+                    onClick={() => {
+                      setSelectedBlandId(item.id);
+                      dispatch(getBlandStatisticList(item.id));
+                    }}
+                  >
+                    {item.blandName}
+                  </ListGroupItem>
+                ))
+                : <></>}
             </ListGroup>
           </CardBody>
         </Card>
@@ -316,27 +200,30 @@ export const Home = () => {
               <table className={styles.salesPerformanceTable}>
                 <thead>
                   <tr>
-                    {TABLE_HEADER.map((item) => (
-                      <th key={item}>{item}</th>
-                    ))}
+                    {TABLE_HEADER.map((item) => <th key={item}>{item}</th>)}
                   </tr>
                 </thead>
                 <tbody>
-                  {detailSample.modelSalsePerformances.map((item) => (
-                    <tr key={item.id}>
+                  {blandStatisticList.map((item) => (
+                    <tr key={item.modelId}>
                       <td>
-                        <Button onClick={() => navigate(`/home/${item.id}`)}>
-                          {item.model}
+                        <Button
+                          onClick={() =>
+                            navigate(
+                              `/home/bland/${selectedBlandId}/model/${item.modelId}`,
+                            )}
+                        >
+                          {item.blandModelName}
                         </Button>
                       </td>
-                      <td>{item.soldCount}</td>
-                      <td>{item.activeCount}</td>
-                      <td>{item.soldMinPrice}</td>
-                      <td>{item.soldMaxPrice}</td>
-                      <td>{item.soldAvgPrice}</td>
-                      <td>{item.activeMinPrice}</td>
-                      <td>{item.activeMaxPrice}</td>
-                      <td>{item.activeAvgPrice}</td>
+                      <td>{item.soldItems.itemCount}</td>
+                      <td>{item.unSoldItems.itemCount}</td>
+                      <td>{item.soldItems.minPrice}</td>
+                      <td>{item.soldItems.maxPrice}</td>
+                      <td>{item.soldItems.averagePrice}</td>
+                      <td>{item.unSoldItems.minPrice}</td>
+                      <td>{item.unSoldItems.maxPrice}</td>
+                      <td>{item.unSoldItems.averagePrice}</td>
                     </tr>
                   ))}
                 </tbody>
