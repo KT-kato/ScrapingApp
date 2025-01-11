@@ -1,16 +1,12 @@
-import { AuthTokenResponse, createClient } from "npm:@supabase/supabase-js";
+import { AuthTokenResponse } from "npm:@supabase/supabase-js";
 import { LoginRequestBody } from "./types.ts";
-import { corsHeaders } from "../common/utils.ts";
+import { corsHeaders, supabaseClient } from "../common/utils.ts";
 import { getEbayApplicationAccessToken } from "../ebay/utils/utils.ts";
 
 export const login = async (_req: Request) => {
   const body: LoginRequestBody = await _req.json();
-  const supabase = createClient(
-    Deno.env.get("URL")!,
-    Deno.env.get("ANON_KEY")!
-  );
-  const { data, error }: AuthTokenResponse =
-    await supabase.auth.signInWithPassword(body);
+  const { data, error }: AuthTokenResponse = await supabaseClient.auth
+    .signInWithPassword(body);
   if (!data) {
     return new Response("Invalid credentials", {
       status: 400,
@@ -36,10 +32,15 @@ export const login = async (_req: Request) => {
       status: 200,
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
-  } catch (_error) {
-    return new Response("invalid Ebay credentials", {
-      status: 400,
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({
+        error,
+      }),
+      {
+        status: 400,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
   }
 };

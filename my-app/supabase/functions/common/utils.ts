@@ -1,5 +1,6 @@
 import axios from "npm:axios";
 import { load } from "npm:cheerio";
+import { createClient } from "npm:@supabase/supabase-js";
 
 // https文字列で定数として定義
 export const yahooFinanceDollarToYenExchangeURL =
@@ -42,3 +43,8 @@ export const getDollar2YenExchangeRate = async (): Promise<number> => {
     return 0;
   }
 };
+
+export const supabaseClient = createClient(
+  Deno.env.get("URL")!,
+  Deno.env.get("ANON_KEY")!,
+);
