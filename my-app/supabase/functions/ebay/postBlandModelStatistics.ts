@@ -27,7 +27,7 @@ const getIdsFromPath = (path: string): PathIds => {
 
 export const getQueryParametersForEbay = (
   modelName: string,
-  requestBody: ebayPostBlandModelStatisticsRequestBody
+  requestBody: ebayPostBlandModelStatisticsRequestBody,
 ) => {
   const keyword = modelName;
   const blandModelNumber = requestBody.blandModelNumber || "";
@@ -110,26 +110,26 @@ export const getItemList = async (ebayItemUrl: string) => {
       $(element).map((_, element) => {
         const itemName = getItemName($, element);
         const itemPriceYen = Number(
-          getItemPriceYen($, element).replace(/\D/g, "")
+          getItemPriceYen($, element).replace(/\D/g, ""),
         );
         const itemShippingCost = getItemShippingCost($, element).replace(
           /\D/g,
-          ""
+          "",
         );
 
         if (itemName == "Shop on eBay") {
           return items;
         }
 
-        const itemShippingCostYen =
-          itemShippingCost === "" ? 0 : Number(itemShippingCost);
+        const itemShippingCostYen = itemShippingCost === ""
+          ? 0
+          : Number(itemShippingCost);
 
         items.push({
           itemName,
-          itemPrice:
-            itemShippingCost === ""
-              ? String(itemPriceYen)
-              : String(itemPriceYen + itemShippingCostYen),
+          itemPrice: itemShippingCost === ""
+            ? String(itemPriceYen)
+            : String(itemPriceYen + itemShippingCostYen),
           itemShippingCost: itemShippingCostYen.toString(),
         });
       });
@@ -153,7 +153,7 @@ type itemDetail = {
 
 export const addItemDetail = async (
   soldItemDetail: itemDetail,
-  unSoldItemDetail: itemDetail
+  unSoldItemDetail: itemDetail,
 ) => {
   try {
     const targetSoldData = await supabaseClient
@@ -172,55 +172,42 @@ export const addItemDetail = async (
       .eq("completed", false)
       .eq("sold", false);
 
-    const existTargetSoldData =
-      targetSoldData.data &&
+    const existTargetSoldData = targetSoldData.data &&
       targetSoldData.data.length > 0 &&
       targetSoldData.data[0].items.length > 0;
-    const existTargetUnSoldData =
-      targetUnSoldData.data &&
+    const existTargetUnSoldData = targetUnSoldData.data &&
       targetUnSoldData.data.length > 0 &&
       targetUnSoldData.data[0].items.length > 0;
-    const responseData = {
-      soldItemCount: 0,
-      soldData: {},
-      unSoldItemCount: 0,
-      unSoldData: {},
-    };
-    console.log("existTargetSoldData: ", existTargetSoldData);
-    console.log("existTargetUnSoldData: ", existTargetUnSoldData);
-
     if (existTargetSoldData) {
       const targetId = targetSoldData.data[0].id;
-      const soldData = await supabaseClient
+      await supabaseClient
         .from("item_detail")
         .upsert({ ...soldItemDetail, id: targetId });
-      responseData.soldItemCount = soldItemDetail.items.length;
-      responseData.soldData = soldData;
     } else {
-      const soldData = await supabaseClient
+      await supabaseClient
         .from("item_detail")
         .insert([soldItemDetail]);
-      responseData.soldItemCount = soldItemDetail.items.length;
-      responseData.soldData = soldData;
     }
     if (existTargetUnSoldData) {
       const targetId = targetUnSoldData.data[0].id;
-      const unSoldData = await supabaseClient
+      await supabaseClient
         .from("item_detail")
         .upsert({ ...unSoldItemDetail, id: targetId });
-      responseData.unSoldItemCount = unSoldItemDetail.items.length;
-      responseData.unSoldData = unSoldData;
     } else {
-      const unSoldData = await supabaseClient
+      await supabaseClient
         .from("item_detail")
         .insert([unSoldItemDetail]);
-      responseData.unSoldItemCount = unSoldItemDetail.items.length;
-      responseData.unSoldData = unSoldData;
     }
 
-    return new Response(JSON.stringify(responseData), {
-      headers: { "Content-Type": "application/json", ...corsHeaders },
-    });
+    return new Response(
+      JSON.stringify({
+        success: true,
+      }),
+      {
+        status: 200,
+        headers: { "Content-Type": "application/json", ...corsHeaders },
+      },
+    );
   } catch (error) {
     return new Response(
       JSON.stringify({
@@ -229,7 +216,7 @@ export const addItemDetail = async (
       {
         status: 400,
         headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      },
     );
   }
 };
@@ -246,7 +233,7 @@ export const postBlandModelStatistics = async (req: Request) => {
       {
         status: 400,
         headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      },
     );
   }
 
@@ -263,14 +250,15 @@ export const postBlandModelStatistics = async (req: Request) => {
         {
           status: 400,
           headers: { "Content-Type": "application/json", ...corsHeaders },
-        }
+        },
       );
     }
 
     const blandName = bland.data[0].bland_name;
     const ebayQueries = getQueryParametersForEbay(blandName, requestBody);
     const ebaySoldUrl = `https://www.ebay.com/sch/i.html?${ebayQueries.sold}`;
-    const ebayUnSoldUrl = `https://www.ebay.com/sch/i.html?${ebayQueries.unSold}`;
+    const ebayUnSoldUrl =
+      `https://www.ebay.com/sch/i.html?${ebayQueries.unSold}`;
     const soldItems = await getItemList(ebaySoldUrl);
     const unSoldItems = await getItemList(ebayUnSoldUrl);
 
@@ -301,7 +289,7 @@ export const postBlandModelStatistics = async (req: Request) => {
       {
         status: 400,
         headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      },
     );
   }
 };
