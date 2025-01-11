@@ -8,4 +8,5 @@ export const TABLE_HEADER = [
   "Active Min Price",
   "Active Max Price",
   "Active Avg Price",
+  "Update",
 ];

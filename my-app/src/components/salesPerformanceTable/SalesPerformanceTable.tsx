@@ -2,6 +2,8 @@ import { Button } from "reactstrap";
 import { getBlandStatisticType } from "../../api/ebay/type";
 import styles from "./SalesPerformanceTable.module.scss";
 import { TABLE_HEADER } from "./constraints";
+import { useDispatch } from "../../slices/store";
+import { postBlandModelStatistics } from "../../slices/ebaySlices";
 
 type Props = {
   blandStatisticList: getBlandStatisticType[];
@@ -12,6 +14,8 @@ export const SalesPerformanceTable = ({
   blandStatisticList,
   handleItemClick,
 }: Props) => {
+  const dispatch = useDispatch();
+
   return (
     <div className={styles.tableWrapper}>
       <table className={styles.salesPerformanceTable}>
@@ -40,6 +44,23 @@ export const SalesPerformanceTable = ({
               <td>{item.unSoldItems.minPrice}</td>
               <td>{item.unSoldItems.maxPrice}</td>
               <td>{item.unSoldItems.averagePrice}</td>
+              <td className="text-center">
+                <i
+                  className="bi bi-arrow-clockwise"
+                  onClick={() => {
+                    dispatch(postBlandModelStatistics(
+                      item.modelId,
+                      {
+                        blandModelNumber: item.blandModelName,
+                        categoryId: "31387",
+                        country: "104",
+                        location: "98",
+                      },
+                    ));
+                  }}
+                >
+                </i>
+              </td>
             </tr>
           ))}
         </tbody>
