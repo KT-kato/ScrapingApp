@@ -137,6 +137,19 @@ export const getBlandStatisticList =
     return;
   };
 
+export const postBland = (blandName: string): AppThunk => (dispatch) => {
+  API.postEbayBland(blandName)
+    .then((response) => {
+      if (response.data.success) {
+        dispatch(getBlandList());
+      }
+    })
+    .catch((error: AxiosError) => {
+      console.log(error);
+    });
+  return;
+};
+
 export const postBlandModelStatistics =
   (blandId: number, data: ebayPostBlandModelStatisticsRequestBody): AppThunk =>
   (dispatch) => {

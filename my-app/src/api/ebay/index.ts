@@ -51,6 +51,17 @@ export const getEbayBlandStatisticList = async (blandId: number) => {
   );
 };
 
+export const postEbayBland = async (blandName: string) => {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  return await axios.post(
+    `${supabaseLocalBaseUrl}/ebay/bland`,
+    { blandName },
+    { headers },
+  );
+};
+
 export const postEbayBlandModelStatistics = async (
   blandId: number,
   data: ebayPostBlandModelStatisticsRequestBody,
