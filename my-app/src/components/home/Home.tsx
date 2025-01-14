@@ -1,4 +1,5 @@
 import {
+  Button,
   Card,
   CardBody,
   CardTitle,
@@ -6,6 +7,7 @@ import {
   DropdownItem,
   DropdownMenu,
   DropdownToggle,
+  Input,
   ListGroup,
   ListGroupItem,
 } from "reactstrap";
@@ -16,6 +18,7 @@ import { useEffect, useMemo, useState } from "react";
 import {
   getBlandList,
   getBlandStatisticList,
+  postBland,
   selectEbayStatus,
 } from "../../slices/ebaySlices";
 import { useDispatch, useSelector } from "../../slices/store";
@@ -28,6 +31,8 @@ export const Home = () => {
   const [isOpenChartSelector, setIsOpenChartSelector] = useState(false);
   const [selectedBlandId, setSelectedBlandId] = useState<number | undefined>();
   const [selectedItem, setSelectedItem] = useState("");
+  const [isBlandInputFormOpen, setIsBlandInputFormOpen] = useState(false);
+  const [addedBlandName, setAddedBlandName] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -155,26 +160,79 @@ export const Home = () => {
     <Page>
       <div className={styles.homeContainer}>
         <Card className={styles.listCard}>
-          <CardBody>
-            <CardTitle tag="h5">Bland List</CardTitle>
-            <ListGroup className="my-5">
-              {blandList.length > 0
-                ? blandList.map((item) => (
-                  <ListGroupItem
-                    key={item.id}
-                    className={`list-group-item-action action ${styles.listGroupItem}`}
-                    href="#pablo"
-                    tag={"a"}
-                    onClick={() => {
-                      setSelectedBlandId(item.id);
-                      dispatch(getBlandStatisticList(item.id));
-                    }}
-                  >
-                    {item.blandName}
-                  </ListGroupItem>
-                ))
-                : <></>}
-            </ListGroup>
+          <CardBody className="d-flex flex-column justify-content-between">
+            <div className={styles.listCardBody}>
+              <CardTitle tag="h5">Bland List</CardTitle>
+              <ListGroup>
+                {blandList.length > 0
+                  ? blandList.map((item) => (
+                    <ListGroupItem
+                      key={item.id}
+                      className={`list-group-item-action action ${styles.listGroupItem}`}
+                      href="#pablo"
+                      tag={"a"}
+                      onClick={() => {
+                        setSelectedBlandId(item.id);
+                        dispatch(getBlandStatisticList(item.id));
+                      }}
+                    >
+                      {item.blandName}
+                    </ListGroupItem>
+                  ))
+                  : <></>}
+                {isBlandInputFormOpen
+                  ? (
+                    <Input
+                      type="text"
+                      className={styles.blandInput}
+                      placeholder="Input Bland Name"
+                      onChange={(e) => setAddedBlandName(e.target.value)}
+                      value={addedBlandName}
+                    />
+                  )
+                  : <></>}
+              </ListGroup>
+            </div>
+            <div className="d-flex flex-row justify-content-between">
+              <div className="align-self-start">
+                {isBlandInputFormOpen
+                  ? (
+                    <Button
+                      onClick={() => {
+                        setIsBlandInputFormOpen((prev) => !prev);
+                        setAddedBlandName("");
+                      }}
+                    >
+                      <i className="fas fa-times" />
+                      Cancel
+                    </Button>
+                  )
+                  : <></>}
+              </div>
+              <div className="align-self-end">
+                {isBlandInputFormOpen
+                  ? (
+                    <Button
+                      onClick={() => {
+                        setIsBlandInputFormOpen((prev) => !prev);
+                        dispatch(postBland(addedBlandName));
+                      }}
+                      disabled={addedBlandName === ""}
+                    >
+                      <i className="fas fa-times" />
+                      Save
+                    </Button>
+                  )
+                  : (
+                    <Button
+                      onClick={() => setIsBlandInputFormOpen((prev) => !prev)}
+                    >
+                      <i className="fas fa-plus" />
+                      Add Bland
+                    </Button>
+                  )}
+              </div>
+            </div>
           </CardBody>
         </Card>
         <Card className={styles.detailCard}>

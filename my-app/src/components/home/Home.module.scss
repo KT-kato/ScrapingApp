@@ -21,6 +21,13 @@ $cardPadding: 2.5rem;
     position: relative;
     width: 30%;
 
+    .listCardBody {
+      display: flex;
+      flex-direction: column;
+      row-gap: 2rem;
+      overflow-y: auto;
+    }
+
     .listGroupItem {
       margin-bottom: 1rem;
       border-width: 0.1rem;
