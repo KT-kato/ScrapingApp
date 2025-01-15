@@ -150,6 +150,23 @@ export const postBland = (blandName: string): AppThunk => (dispatch) => {
   return;
 };
 
+export const postBlandModel = (
+  blandId: number,
+  modelName: string,
+): AppThunk => {
+  return (dispatch) => {
+    API.postEbayBlandModel(blandId, modelName)
+      .then((response) => {
+        if (response.data.success) {
+          dispatch(getBlandModels(blandId));
+        }
+      })
+      .catch((error: AxiosError) => {
+        console.log(error);
+      });
+  };
+};
+
 export const postBlandModelStatistics =
   (blandId: number, data: ebayPostBlandModelStatisticsRequestBody): AppThunk =>
   (dispatch) => {
