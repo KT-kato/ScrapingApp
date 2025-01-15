@@ -43,11 +43,13 @@ const calculateBlandStatistics = (items: Item[]) => {
   // アイテム数
   const itemCount = itemPrices.length;
   // 平均
-  const averagePrice = itemPrices.reduce((a, b) => a + b) / itemPrices.length;
+  const averagePrice = itemCount > 0
+    ? itemPrices.reduce((a, b) => a + b) / itemPrices.length
+    : 0;
   // 最大値
-  const maxPrice = Math.max(...itemPrices);
+  const maxPrice = itemCount > 0 ? Math.max(...itemPrices) : 0;
   // 最小値
-  const minPrice = Math.min(...itemPrices);
+  const minPrice = itemCount > 0 ? Math.min(...itemPrices) : 0;
   return {
     itemCount,
     averagePrice,

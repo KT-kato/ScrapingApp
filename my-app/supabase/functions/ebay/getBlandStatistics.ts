@@ -41,8 +41,19 @@ export const getBlandStatistics = async (req: Request) => {
       .select("*")
       .eq("bland_id", pathIds.blandId)
       .eq("model_id", pathIds.modelId);
+    if (data.data === null) {
+      return new Response(
+        JSON.stringify({
+          error: "No data",
+        }),
+        {
+          status: 400,
+          headers: { "Content-Type": "application/json", ...corsHeaders },
+        },
+      );
+    }
 
-    const soldItems = data.data !== null
+    const soldItems = data.data.length > 0
       ? data.data
         .filter((item) => item.sold)
         .flatMap((item) => {
@@ -53,7 +64,7 @@ export const getBlandStatistics = async (req: Request) => {
           }));
         })
       : [];
-    const unSoldItems = data.data !== null
+    const unSoldItems = data.data.length > 0
       ? data.data
         .filter((item) => !item.sold)
         .flatMap((item) => {
@@ -66,7 +77,9 @@ export const getBlandStatistics = async (req: Request) => {
       : [];
     const responseData = {
       modelId: pathIds.modelId,
-      blandModelName: data.data ? data.data[0].bland_model_number : "",
+      blandModelName: data.data.length > 0
+        ? data.data[0].bland_model_number
+        : "",
       soldItems: soldItems,
       unSoldItems: unSoldItems,
     };
@@ -75,6 +88,7 @@ export const getBlandStatistics = async (req: Request) => {
         statistics: responseData,
       }),
       {
+        status: 200,
         headers: { "Content-Type": "application/json", ...corsHeaders },
       },
     );
