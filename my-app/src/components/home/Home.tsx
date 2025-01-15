@@ -69,6 +69,15 @@ export const Home = () => {
     }));
   }, [blandStatisticList]);
 
+  const activeSoldRatioData = useMemo(() => {
+    return blandStatisticList.map((item) => ({
+      key: item.modelId,
+      value: item.unSoldItems.itemCount !== 0
+        ? item.soldItems.itemCount / item.unSoldItems.itemCount
+        : 0,
+    }));
+  }, [blandStatisticList]);
+
   const soldMinPriceData = useMemo(() => {
     return blandStatisticList.map((item) => ({
       key: item.modelId,
@@ -115,6 +124,7 @@ export const Home = () => {
     return [
       { label: "Sold Count", data: soldCountData },
       { label: "Active Count", data: activeCountData },
+      { label: "Active/Sold Ratio", data: activeSoldRatioData },
       { label: "Sold Min Price", data: soldMinPriceData },
       { label: "Sold Max Price", data: soldMaxPriceData },
       { label: "Sold Avg Price", data: soldAvgPriceData },
@@ -125,6 +135,7 @@ export const Home = () => {
   }, [
     soldCountData,
     activeCountData,
+    activeSoldRatioData,
     soldMinPriceData,
     soldMaxPriceData,
     soldAvgPriceData,
@@ -193,8 +204,8 @@ export const Home = () => {
                   : <></>}
               </ListGroup>
             </div>
-            <div className="d-flex flex-row justify-content-between">
-              <div className="align-self-start">
+            <div className="d-flex justify-content-end column-gap-2">
+              <div className="align-self-right">
                 {isBlandInputFormOpen
                   ? (
                     <Button
@@ -244,6 +255,7 @@ export const Home = () => {
                 navigate(
                   `/home/bland/${selectedBlandId}/model/${modelId}`,
                 )}
+              blandId={selectedBlandId}
             />
             <div className={styles.chartItemSelector}>
               <Dropdown
