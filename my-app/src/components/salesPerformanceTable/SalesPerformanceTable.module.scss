@@ -17,6 +17,10 @@
     z-index: 1;
   }
 
+  td {
+    text-align: right;
+  }
+
   // ヘッダーの固定
   thead {
     position: sticky;

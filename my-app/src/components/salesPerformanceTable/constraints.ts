@@ -2,6 +2,7 @@ export const TABLE_HEADER = [
   "Model",
   "Sold Count",
   "Active Count",
+  "Sold/Active Ratio",
   "Sold Min Price",
   "Sold Max Price",
   "Sold Avg Price",

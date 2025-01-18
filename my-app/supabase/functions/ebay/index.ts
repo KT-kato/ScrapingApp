@@ -18,6 +18,7 @@ import { getBlandList } from "./getBlandList.ts";
 import { getBlandStatisticsList } from "./getBlandStatisticsList.ts";
 import { getBlandStatistics } from "./getBlandStatistics.ts";
 import { postBland } from "./postBland.ts";
+import { postBlandModel } from "./postBlandModel.ts";
 
 Deno.serve(async (_req: Request) => {
   const requestMethod = _req.method;
@@ -49,6 +50,10 @@ Deno.serve(async (_req: Request) => {
       if (/\/ebay\/bland$/.test(_req.url)) {
         return await postBland(_req);
       }
+      if (/\/ebay\/bland\/[^/]+\/models$/.test(_req.url)) {
+        return await postBlandModel(_req);
+      }
+
       return mockResponse();
     })
     .with(methodPatttern.PUT, () => mockResponse())
