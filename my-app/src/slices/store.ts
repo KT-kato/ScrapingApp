@@ -1,18 +1,20 @@
 import { configureStore } from "@reduxjs/toolkit";
 import ebayReducer from "./ebaySlices";
 import sessionReducer from "./sessionSlices";
+import spinnerReducer from "./spinnerSlices";
 
-import type { ThunkAction, Action } from "@reduxjs/toolkit";
+import type { Action, ThunkAction } from "@reduxjs/toolkit";
 import {
   TypedUseSelectorHook,
-  useSelector as rawUserSelector,
   useDispatch as rawUseDispatch,
+  useSelector as rawUserSelector,
 } from "react-redux";
 
 export const store = configureStore({
   reducer: {
     ebay: ebayReducer,
     session: sessionReducer,
+    spinner: spinnerReducer,
   },
 });
 
