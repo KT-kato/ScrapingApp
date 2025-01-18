@@ -17,6 +17,7 @@ import {
   setSupabaseSessionToken,
   setSupabaseUser,
 } from "./util";
+import { closeSpinner, showSpinner } from "./spinnerSlices";
 
 export type sessionState = {
   session?: Session;
@@ -36,7 +37,7 @@ export const sessionSlice = createSlice({
   name: "session",
   initialState,
   reducers: {
-    startReqirest: (state) => {
+    startRequest: (state) => {
       state.isRequesting = true;
     },
     setErrorMessage: (state, action: PayloadAction<responseErrorType>) => {
@@ -77,12 +78,13 @@ export const {
   setLoginSuccess,
   setSignUpSuccess,
   setErrorMessage,
-  startReqirest,
+  startRequest,
   finishRequest,
 } = sessionSlice.actions;
 
 export const login = (data: LoginRequestBody): AppThunk => (dispatch) => {
-  dispatch(startReqirest());
+  dispatch(showSpinner());
+  dispatch(startRequest());
   getSessionToken(data)
     .then((response) => {
       dispatch(setLoginSuccess(response));
@@ -90,12 +92,16 @@ export const login = (data: LoginRequestBody): AppThunk => (dispatch) => {
     .catch((error: AxiosError) => {
       dispatch(setErrorMessage(errorHandler(error)));
     })
-    .finally(() => dispatch(finishRequest()));
+    .finally(() => {
+      dispatch(finishRequest());
+      dispatch(closeSpinner());
+    });
   return;
 };
 
 export const signUpUser = (data: SignUpRequestBody): AppThunk => (dispatch) => {
-  dispatch(startReqirest());
+  dispatch(showSpinner());
+  dispatch(startRequest());
   signUpNewUser(data)
     .then((response) => {
       dispatch(setSignUpSuccess(response));
@@ -103,7 +109,11 @@ export const signUpUser = (data: SignUpRequestBody): AppThunk => (dispatch) => {
     .catch((error: AxiosError) => {
       dispatch(setErrorMessage(errorHandler(error)));
     })
-    .finally(() => dispatch(finishRequest()));
+    .finally(() => {
+      dispatch(finishRequest());
+      dispatch(closeSpinner());
+    });
+
   return;
 };
 
