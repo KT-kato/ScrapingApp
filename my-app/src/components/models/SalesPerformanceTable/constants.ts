@@ -1,4 +1,4 @@
-export const TABLE_HEADER = [
+export const TABLE_HEADER: string[] = [
   "Model",
   "Sold Count",
   "Active Count",

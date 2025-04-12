@@ -1,0 +1,24 @@
+// 変数で定義
+$containerHeight: 100vh;
+$detailCardWidth: 70%;
+$listCardWidth: 30%;
+$cardBetweenMargin: 2.5rem;
+
+.homeContainer {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  column-gap: $cardBetweenMargin;
+
+  .brandListContainer {
+    width: $listCardWidth;
+  }
+
+  .contentContainer {
+    width: $detailCardWidth;
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+  }
+}

@@ -1,0 +1,38 @@
+// 変数で定義
+$cardBetweenMargin: 2.5rem;
+$cardPadding: 2.5rem;
+
+.listCard {
+  position: relative;
+  width: 100%;
+
+  .listCardBody {
+    display: flex;
+    flex-direction: column;
+    row-gap: 2rem;
+    overflow-y: auto;
+  }
+
+  .listGroupItem {
+    margin-bottom: 1rem;
+    border-width: 0.1rem;
+    border-top-width: 0.1rem !important;
+
+    &:last-child {
+      border-width: 0.1rem;
+      border-radius: 0%;
+    }
+    &:first-child {
+      border-width: 0.1rem;
+      border-radius: 0%;
+    }
+
+    &.selected {
+      background-color: #e9ecef;
+    }
+  }
+}
+
+.blandInput {
+  margin-bottom: 1rem;
+}
