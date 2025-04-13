@@ -7,30 +7,26 @@ import {
   DropdownMenu,
   DropdownToggle,
   Table,
-} from "reactstrap";
-import styles from "./ModelDetail.module.scss";
+} from 'reactstrap'
+import styles from './ModelDetail.module.scss'
+import { itemStatus } from './constants'
 
 export type ItemData = {
-  itemName: string;
-  itemPrice: number;
-  itemShippingCost: number;
-  isSold: boolean;
-};
+  itemName: string
+  itemPrice: number
+  itemShippingCost: number
+  isSold: boolean
+}
 
-export type ItemStatus = "Active" | "Sold" | "All";
-export const itemStatus = {
-  ACTIVE: "Active",
-  SOLD: "Sold",
-  ALL: "All",
-} as const;
+export type ItemStatus = 'Active' | 'Sold' | 'All'
 
 export type ModelDetailProps = {
-  tableData: ItemData[];
-  selectedStatus: ItemStatus;
-  isStatusDropdownOpen: boolean;
-  onToggleStatusDropdown: () => void;
-  onSelectStatus: (status: ItemStatus) => void;
-};
+  tableData: ItemData[]
+  selectedStatus: ItemStatus
+  isStatusDropdownOpen: boolean
+  onToggleStatusDropdown: () => void
+  onSelectStatus: (status: ItemStatus) => void
+}
 
 export const ModelDetail = ({
   tableData,
@@ -46,15 +42,13 @@ export const ModelDetail = ({
           <div className="fw-bold">Model Detail</div>
           <Dropdown
             isOpen={isStatusDropdownOpen}
-            onClick={onToggleStatusDropdown}
-          >
+            onClick={onToggleStatusDropdown}>
             <DropdownToggle caret>{selectedStatus}</DropdownToggle>
-            <DropdownMenu container={"body"}>
-              {Object.values(itemStatus).map((status) => (
+            <DropdownMenu container={'body'}>
+              {Object.values(itemStatus).map(status => (
                 <DropdownItem
                   key={status}
-                  onClick={() => onSelectStatus(status)}
-                >
+                  onClick={() => onSelectStatus(status)}>
                   {status}
                 </DropdownItem>
               ))}
@@ -70,11 +64,11 @@ export const ModelDetail = ({
             </tr>
           </thead>
           <tbody>
-            {tableData.map((data) => (
+            {tableData.map(data => (
               <tr key={data.itemName}>
                 <td className="w-100 d-flex flex-row gap-2 align-items-center">
-                  <Badge color={data.isSold ? "danger" : "success"}>
-                    {data.isSold ? "Sold" : "Active"}
+                  <Badge color={data.isSold ? 'danger' : 'success'}>
+                    {data.isSold ? 'Sold' : 'Active'}
                   </Badge>
                   <div>{data.itemName}</div>
                 </td>
@@ -86,5 +80,5 @@ export const ModelDetail = ({
         </Table>
       </CardBody>
     </Card>
-  );
-};
+  )
+}

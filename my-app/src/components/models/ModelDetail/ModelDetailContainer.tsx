@@ -1,71 +1,72 @@
-import { useEffect, useMemo, useState } from "react";
-import { useDispatch, useSelector } from "../../../slices/store";
+import { useEffect, useMemo, useState } from 'react'
+import { useDispatch, useSelector } from '../../../slices/store'
 import {
   getBlandStatistics,
   selectEbayStatus,
-} from "../../../slices/ebaySlices";
-import { ModelDetail, ItemStatus, itemStatus, ItemData } from "./ModelDetail";
+} from '../../../slices/ebaySlices'
+import { ModelDetail, ItemStatus } from './ModelDetail'
+import { itemStatus } from './constants'
 
 export type ModelDetailContainerProps = {
-  blandId: number;
-  modelId: number;
-};
+  blandId: number
+  modelId: number
+}
 
 export const ModelDetailContainer = ({
   blandId,
   modelId,
 }: ModelDetailContainerProps) => {
-  const dispatch = useDispatch();
-  const { blandStatistics } = useSelector(selectEbayStatus);
+  const dispatch = useDispatch()
+  const { blandStatistics } = useSelector(selectEbayStatus)
   const [selectedStatus, setSelectedStatus] = useState<ItemStatus>(
-    itemStatus.ACTIVE
-  );
-  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false);
+    itemStatus.ACTIVE,
+  )
+  const [isStatusDropdownOpen, setIsStatusDropdownOpen] = useState(false)
 
   useEffect(() => {
-    dispatch(getBlandStatistics(blandId, modelId));
-  }, [blandId, modelId, dispatch]);
+    dispatch(getBlandStatistics(blandId, modelId))
+  }, [blandId, modelId, dispatch])
 
   const soldItems = useMemo(
     () =>
-      blandStatistics?.soldItems.map((item) => ({
+      blandStatistics?.soldItems.map(item => ({
         itemName: item.itemName,
         itemPrice: item.itemPrice,
         itemShippingCost: item.itemShippingCost,
         isSold: true,
       })) || [],
-    [blandStatistics]
-  );
+    [blandStatistics],
+  )
 
   const activeItems = useMemo(
     () =>
-      blandStatistics?.unSoldItems.map((item) => ({
+      blandStatistics?.unSoldItems.map(item => ({
         itemName: item.itemName,
         itemPrice: item.itemPrice,
         itemShippingCost: item.itemShippingCost,
         isSold: false,
       })) || [],
-    [blandStatistics]
-  );
+    [blandStatistics],
+  )
 
   const tableData = useMemo(() => {
     switch (selectedStatus) {
       case itemStatus.ACTIVE:
-        return activeItems;
+        return activeItems
       case itemStatus.SOLD:
-        return soldItems;
+        return soldItems
       case itemStatus.ALL:
-        return [...activeItems, ...soldItems];
+        return [...activeItems, ...soldItems]
     }
-  }, [activeItems, selectedStatus, soldItems]);
+  }, [activeItems, selectedStatus, soldItems])
 
   const handleToggleStatusDropdown = () => {
-    setIsStatusDropdownOpen((prev) => !prev);
-  };
+    setIsStatusDropdownOpen(prev => !prev)
+  }
 
   const handleSelectStatus = (status: ItemStatus) => {
-    setSelectedStatus(status);
-  };
+    setSelectedStatus(status)
+  }
 
   return (
     <ModelDetail
@@ -75,5 +76,5 @@ export const ModelDetailContainer = ({
       onToggleStatusDropdown={handleToggleStatusDropdown}
       onSelectStatus={handleSelectStatus}
     />
-  );
-};
+  )
+}
