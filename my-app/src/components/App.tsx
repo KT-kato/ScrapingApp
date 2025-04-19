@@ -1,27 +1,35 @@
-import { BrowserRouter, Route, Routes } from "react-router";
-import { Provider } from "react-redux";
-import { store } from "../slices/store.ts";
-import { Login } from "./login/Login.tsx";
-import { Home } from "./home/Home.tsx";
-import { Signup } from "./signup/Signup.tsx";
-import { ModelDetail } from "./modelDetail/ModelDetail.tsx";
-import { Spinner } from "./Spinner/Spinner.tsx";
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router'
+import { Provider } from 'react-redux'
+import { store } from '../slices/store'
+import { Spinner } from './Spinner/Spinner'
+import { LoginPage } from '../pages/LoginPage'
+import { SignupPage } from '../pages/SignupPage'
+import { HomePage } from '../pages/HomePage'
+import { ModelDetailPage } from '../pages/ModelDetailPage'
+import { ProtectedRoutes } from './common/ProtectedRoutes'
 
+// メインのアプリケーションコンポーネント
 export const App = () => {
   return (
     <Provider store={store}>
       <BrowserRouter>
         <Spinner />
         <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/home" element={<Home />} />
-          <Route
-            path="/home/bland/:blandId/model/:modelId"
-            element={<ModelDetail />}
-          />
+          {/* 認証関連のルート */}
+          <Route path="/" element={<Navigate to="/login" />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
+
+          {/* 保護されたルート */}
+          <Route element={<ProtectedRoutes />}>
+            <Route path="/home" element={<HomePage />} />
+            <Route
+              path="/brands/:blandId/models/:modelId"
+              element={<ModelDetailPage />}
+            />
+          </Route>
         </Routes>
       </BrowserRouter>
     </Provider>
-  );
-};
+  )
+}

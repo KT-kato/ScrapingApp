@@ -1,0 +1,31 @@
+// 変数で定義
+$cardPadding: 2.5rem;
+
+.chartCard {
+  width: 100%;
+  margin-top: 2rem;
+
+  .chartCardBody {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    align-items: center;
+    row-gap: 2rem;
+
+    .chartItemSelector {
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .chartContainer {
+      width: 100%;
+      position: relative;
+
+      .chart {
+        width: 100%;
+        height: 100%;
+      }
+    }
+  }
+}
