@@ -1,10 +1,10 @@
-import { useParams } from "react-router";
-import { Page } from "../components/layout/Page/Page";
-import { ModelDetailContainer } from "../components/models/ModelDetail";
-import styles from "./ModelDetailPage.module.scss";
+import { useParams } from 'react-router'
+import { Page } from '../components/layout/Page/Page'
+import { ModelDetailContainer } from '../components/models/ModelDetail'
+import styles from './ModelDetailPage.module.scss'
 
 export const ModelDetailPage = () => {
-  const { blandId, modelId } = useParams();
+  const { blandId, modelId } = useParams()
 
   if (!blandId || !modelId) {
     return (
@@ -14,7 +14,7 @@ export const ModelDetailPage = () => {
           <p>Brand ID and Model ID are required.</p>
         </div>
       </Page>
-    );
+    )
   }
 
   return (
@@ -26,5 +26,5 @@ export const ModelDetailPage = () => {
         />
       </div>
     </Page>
-  );
-};
+  )
+}

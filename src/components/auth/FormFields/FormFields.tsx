@@ -1,13 +1,13 @@
-import { Input, Label } from "reactstrap";
-import styles from "./FormFields.module.scss";
+import { Input, Label } from 'reactstrap'
+import styles from './FormFields.module.scss'
 
 export type InputFieldProps = {
-  id: string;
-  label: string;
-  type: "text" | "email" | "password" | "number" | "date";
-  value: string;
-  onChange: (value: string) => void;
-};
+  id: string
+  label: string
+  type: 'text' | 'email' | 'password' | 'number' | 'date'
+  value: string
+  onChange: (value: string) => void
+}
 
 export const InputField = ({
   id,
@@ -25,18 +25,18 @@ export const InputField = ({
         type={type}
         id={id}
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={e => onChange(e.target.value)}
       />
     </div>
-  );
-};
+  )
+}
 
 export const EmailInput = ({
   value,
   onChange,
 }: {
-  value: string;
-  onChange: (value: string) => void;
+  value: string
+  onChange: (value: string) => void
 }) => {
   return (
     <InputField
@@ -46,15 +46,15 @@ export const EmailInput = ({
       value={value}
       onChange={onChange}
     />
-  );
-};
+  )
+}
 
 export const PasswordInput = ({
   value,
   onChange,
 }: {
-  value: string;
-  onChange: (value: string) => void;
+  value: string
+  onChange: (value: string) => void
 }) => {
   return (
     <InputField
@@ -64,5 +64,5 @@ export const PasswordInput = ({
       value={value}
       onChange={onChange}
     />
-  );
-};
+  )
+}

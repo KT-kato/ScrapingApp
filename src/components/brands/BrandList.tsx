@@ -6,17 +6,17 @@ import {
   Input,
   ListGroup,
   ListGroupItem,
-} from "reactstrap";
-import { useState } from "react";
-import styles from "./BrandList.module.scss";
-import { blandListType } from "../../api/ebay/type";
+} from 'reactstrap'
+import { useState } from 'react'
+import styles from './BrandList.module.scss'
+import { blandListType } from '../../api/ebay/type'
 
 export type BrandListProps = {
-  brands: blandListType[];
-  selectedBrandId?: number;
-  onSelectBrand: (brandId: number) => void;
-  onAddBrand: (brandName: string) => void;
-};
+  brands: blandListType[]
+  selectedBrandId?: number
+  onSelectBrand: (brandId: number) => void
+  onAddBrand: (brandName: string) => void
+}
 
 export const BrandList = ({
   brands,
@@ -24,14 +24,14 @@ export const BrandList = ({
   onSelectBrand,
   onAddBrand,
 }: BrandListProps) => {
-  const [isBlandInputFormOpen, setIsBlandInputFormOpen] = useState(false);
-  const [addedBlandName, setAddedBlandName] = useState("");
+  const [isBlandInputFormOpen, setIsBlandInputFormOpen] = useState(false)
+  const [addedBlandName, setAddedBlandName] = useState('')
 
   const handleSaveBrand = () => {
-    setIsBlandInputFormOpen(false);
-    onAddBrand(addedBlandName);
-    setAddedBlandName("");
-  };
+    setIsBlandInputFormOpen(false)
+    onAddBrand(addedBlandName)
+    setAddedBlandName('')
+  }
 
   return (
     <Card className={styles.listCard}>
@@ -40,16 +40,15 @@ export const BrandList = ({
           <CardTitle tag="h5">Bland List</CardTitle>
           <ListGroup>
             {brands.length > 0 ? (
-              brands.map((item) => (
+              brands.map(item => (
                 <ListGroupItem
                   key={item.id}
                   className={`list-group-item-action action ${
                     styles.listGroupItem
-                  } ${selectedBrandId === item.id ? styles.selected : ""}`}
+                  } ${selectedBrandId === item.id ? styles.selected : ''}`}
                   href="#pablo"
-                  tag={"a"}
-                  onClick={() => onSelectBrand(item.id)}
-                >
+                  tag={'a'}
+                  onClick={() => onSelectBrand(item.id)}>
                   {item.blandName}
                 </ListGroupItem>
               ))
@@ -61,7 +60,7 @@ export const BrandList = ({
                 type="text"
                 className={styles.blandInput}
                 placeholder="Input Bland Name"
-                onChange={(e) => setAddedBlandName(e.target.value)}
+                onChange={e => setAddedBlandName(e.target.value)}
                 value={addedBlandName}
               />
             ) : (
@@ -74,10 +73,9 @@ export const BrandList = ({
             {isBlandInputFormOpen ? (
               <Button
                 onClick={() => {
-                  setIsBlandInputFormOpen(false);
-                  setAddedBlandName("");
-                }}
-              >
+                  setIsBlandInputFormOpen(false)
+                  setAddedBlandName('')
+                }}>
                 <i className="fas fa-times" />
                 Cancel
               </Button>
@@ -89,8 +87,7 @@ export const BrandList = ({
             {isBlandInputFormOpen ? (
               <Button
                 onClick={handleSaveBrand}
-                disabled={addedBlandName === ""}
-              >
+                disabled={addedBlandName === ''}>
                 <i className="fas fa-times" />
                 Save
               </Button>
@@ -104,5 +101,5 @@ export const BrandList = ({
         </div>
       </CardBody>
     </Card>
-  );
-};
+  )
+}

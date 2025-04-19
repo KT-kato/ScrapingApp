@@ -1,9 +1,9 @@
-import styles from "./Page.module.scss";
+import styles from './Page.module.scss'
 
 type Props = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 
 export const Page = ({ children }: Props) => {
-  return <div className={styles.pageContainer}>{children}</div>;
-};
+  return <div className={styles.pageContainer}>{children}</div>
+}

@@ -1,2 +1,2 @@
-export * from "./ModelDetail";
-export * from "./ModelDetailContainer";
+export * from './ModelDetail'
+export * from './ModelDetailContainer'

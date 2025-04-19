@@ -1,12 +1,12 @@
-import { Button, Card, CardBody, CardTitle, Form } from "reactstrap";
-import styles from "./AuthForm.module.scss";
+import { Button, Card, CardBody, CardTitle, Form } from 'reactstrap'
+import styles from './AuthForm.module.scss'
 
 export type AuthFormProps = {
-  title: string;
-  buttonText: string;
-  onSubmit: (e: React.FormEvent) => void;
-  children: React.ReactNode;
-};
+  title: string
+  buttonText: string
+  onSubmit: (e: React.FormEvent) => void
+  children: React.ReactNode
+}
 
 export const AuthForm = ({
   title,
@@ -24,5 +24,5 @@ export const AuthForm = ({
         </Form>
       </CardBody>
     </Card>
-  );
-};
+  )
+}
