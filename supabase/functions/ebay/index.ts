@@ -3,61 +3,61 @@
 // This enables autocomplete, go to definition, etc.
 
 // Setup type definitions for built-in Supabase Runtime APIs
-import "jsr:@supabase/functions-js/edge-runtime.d.ts";
+import 'jsr:@supabase/functions-js/edge-runtime.d.ts'
 import {
   methodPatttern,
   mockResponse,
   optionsResponse,
-} from "../common/utils.ts";
-import { match } from "jsr:@gabriel/ts-pattern";
-import { BadRequest } from "../common/errorResponses.ts";
-import { getEbayAuthToken } from "./login.ts";
-import { getBlandModelList } from "./getBlandModelList.ts";
-import { postBlandModelStatistics } from "./postBlandModelStatistics.ts";
-import { getBlandList } from "./getBlandList.ts";
-import { getBlandStatisticsList } from "./getBlandStatisticsList.ts";
-import { getBlandStatistics } from "./getBlandStatistics.ts";
-import { postBland } from "./postBland.ts";
-import { postBlandModel } from "./postBlandModel.ts";
+} from '../common/utils.ts'
+import { match } from 'jsr:@gabriel/ts-pattern'
+import { BadRequest } from '../common/errorResponses.ts'
+import { getEbayAuthToken } from './login.ts'
+import { getBlandModelList } from './getBlandModelList.ts'
+import { postBlandModelStatistics } from './postBlandModelStatistics.ts'
+import { getBlandList } from './getBlandList.ts'
+import { getBlandStatisticsList } from './getBlandStatisticsList.ts'
+import { getBlandStatistics } from './getBlandStatistics.ts'
+import { postBland } from './postBland.ts'
+import { postBlandModel } from './postBlandModel.ts'
 
 Deno.serve(async (_req: Request) => {
-  const requestMethod = _req.method;
+  const requestMethod = _req.method
 
   return await match(requestMethod)
     .with(methodPatttern.OPTIONS, () => optionsResponse())
     .with(methodPatttern.GET, async () => {
       if (/\/ebay\/bland$/.test(_req.url)) {
-        return await getBlandList();
+        return await getBlandList()
       }
       if (/\/ebay\/bland\/[^/]+\/models$/.test(_req.url)) {
-        return await getBlandModelList(_req);
+        return await getBlandModelList(_req)
       }
       if (/\/ebay\/bland\/[^/]+\/models\/[^/]+$/.test(_req.url)) {
-        return await getBlandStatistics(_req);
+        return await getBlandStatistics(_req)
       }
       if (/\/ebay\/bland\/[^/]+\/bland-statistics$/.test(_req.url)) {
-        return await getBlandStatisticsList(_req);
+        return await getBlandStatisticsList(_req)
       }
-      if (_req.url.includes("/ebay/login")) {
-        return await getEbayAuthToken();
+      if (_req.url.includes('/ebay/login')) {
+        return await getEbayAuthToken()
       }
-      return mockResponse();
+      return mockResponse()
     })
     .with(methodPatttern.POST, async () => {
       if (/\/ebay\/bland\/[^/]+\/models\/statistics$/.test(_req.url)) {
-        return postBlandModelStatistics(_req);
+        return postBlandModelStatistics(_req)
       }
       if (/\/ebay\/bland$/.test(_req.url)) {
-        return await postBland(_req);
+        return await postBland(_req)
       }
       if (/\/ebay\/bland\/[^/]+\/models$/.test(_req.url)) {
-        return await postBlandModel(_req);
+        return await postBlandModel(_req)
       }
 
-      return mockResponse();
+      return mockResponse()
     })
     .with(methodPatttern.PUT, () => mockResponse())
     .with(methodPatttern.DELETE, () => mockResponse())
     .with(methodPatttern.PATCH, () => mockResponse())
-    .otherwise(() => BadRequest());
-});
+    .otherwise(() => BadRequest())
+})
